@@ -1,0 +1,375 @@
+﻿@model ECommerce.PL.ViewModels.Account.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login - Shopfinity";
+}
+
+<style>
+
+    @@keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    /* Login Container */
+    .login-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem 1rem;
+    }
+
+    /* Login Card */
+    .login-card {
+        background: white;
+        border: 2px solid var(--cream);
+        border-radius: 24px;
+        box-shadow: 0 10px 40px rgba(49, 54, 71, 0.15);
+        overflow: hidden;
+        animation: fadeInUp 0.6s ease;
+        max-width: 500px;
+        width: 100%;
+    }
+
+    /* Card Header */
+    .login-header {
+        background: linear-gradient(135deg, var(--dark-navy), var(--slate-blue));
+        color: white;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .login-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(163, 176, 135, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+    .login-header-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .login-icon {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .login-title {
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .login-subtitle {
+        font-size: 1rem;
+        opacity: 0.9;
+        margin-top: 0.5rem;
+    }
+
+    /* Card Body */
+    .login-body {
+        padding: 2.5rem;
+    }
+
+    /* Form Elements */
+    .form-label {
+        color: var(--dark-navy);
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .input-group {
+        margin-bottom: 0.5rem;
+    }
+
+    .input-group-text {
+        background: linear-gradient(135deg, var(--cream), #fffae6);
+        border: 2px solid var(--cream);
+        border-right: none;
+        color: var(--sage-green);
+        font-size: 1.1rem;
+        padding: 0.75rem 1rem;
+    }
+
+    .form-control {
+        border: 2px solid var(--cream);
+        border-left: none;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.3s;
+    }
+
+        .form-control:focus {
+            border-color: var(--sage-green);
+            box-shadow: 0 0 0 0.2rem rgba(163, 176, 135, 0.25);
+        }
+
+    .input-group:focus-within .input-group-text {
+        border-color: var(--sage-green);
+    }
+
+    /* Remember Me Checkbox */
+    .form-check {
+        padding-left: 1.8rem;
+    }
+
+    .form-check-input {
+        width: 1.2rem;
+        height: 1.2rem;
+        border: 2px solid var(--sage-green);
+        cursor: pointer;
+    }
+
+        .form-check-input:checked {
+            background-color: var(--sage-green);
+            border-color: var(--sage-green);
+        }
+
+        .form-check-input:focus {
+            box-shadow: 0 0 0 0.2rem rgba(163, 176, 135, 0.25);
+        }
+
+    .form-check-label {
+        color: var(--slate-blue);
+        font-weight: 500;
+        cursor: pointer;
+        font-size: 0.95rem;
+    }
+
+    /* Login Button */
+    .btn-login {
+        background: linear-gradient(135deg, var(--sage-green), #b5c599);
+        border: none;
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.05rem;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(163, 176, 135, 0.3);
+        width: 100%;
+    }
+
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(163, 176, 135, 0.5);
+            color: white;
+        }
+
+        .btn-login i {
+            margin-right: 0.5rem;
+        }
+
+    /* Forgot Password Link */
+    .forgot-password-link {
+        color: var(--slate-blue);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s;
+    }
+
+        .forgot-password-link:hover {
+            color: var(--sage-green);
+            text-decoration: underline;
+        }
+
+    /* Card Footer */
+    .login-footer {
+        background: linear-gradient(135deg, var(--cream), #fffae6);
+        padding: 1.5rem;
+        text-align: center;
+        border-top: 2px solid var(--cream);
+    }
+
+    .footer-text {
+        color: var(--slate-blue);
+        margin: 0;
+        font-size: 0.95rem;
+    }
+
+    .register-link {
+        color: var(--sage-green);
+        text-decoration: none;
+        font-weight: 700;
+        transition: all 0.3s;
+    }
+
+        .register-link:hover {
+            color: var(--dark-navy);
+            text-decoration: underline;
+        }
+
+    /* Validation Messages */
+    .text-danger {
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: block;
+        animation: slideInRight 0.3s ease;
+    }
+
+    .validation-summary-errors {
+        background: #fee;
+        border: 2px solid #fcc;
+        border-radius: 12px;
+        padding: 1rem;
+        animation: slideInRight 0.3s ease;
+        margin-bottom: 1.5rem;
+    }
+
+        .validation-summary-errors ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .login-container {
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+
+        .login-body {
+            padding: 2rem 1.5rem;
+        }
+
+        .login-header {
+            padding: 2rem 1.5rem;
+        }
+
+        .login-icon {
+            font-size: 2.5rem;
+        }
+
+        .login-title {
+            font-size: 1.6rem;
+        }
+
+        .login-subtitle {
+            font-size: 0.9rem;
+        }
+
+        .btn-login {
+            font-size: 1rem;
+            padding: 0.9rem 1.5rem;
+        }
+
+        .form-control,
+        .input-group-text {
+            font-size: 0.9rem;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .login-container {
+            padding: 1.5rem 0.75rem;
+        }
+
+        .login-card {
+            border-radius: 20px;
+        }
+
+        .login-body {
+            padding: 1.5rem 1.25rem;
+        }
+
+        .login-header {
+            padding: 1.5rem 1.25rem;
+        }
+
+        .login-icon {
+            font-size: 2rem;
+        }
+
+        .login-title {
+            font-size: 1.4rem;
+        }
+    }
+</style>
+
+<div class="login-container">
+    <div class="login-card">
+        <!-- Header -->
+        <div class="login-header">
+            <div class="login-header-content">
+                <i class="bi bi-box-arrow-in-right login-icon"></i>
+                <h3 class="login-title">Welcome Back</h3>
+                <p class="login-subtitle">Login to your Shopfinity account</p>
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="login-body">
+            <form asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <!-- Email Input -->
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label">Email Address</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+                        <input asp-for="Email" class="form-control" placeholder="Enter your email" autofocus />
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <!-- Password Input -->
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                        <input asp-for="Password" class="form-control" placeholder="Enter your password" />
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <!-- Remember Me & Forgot Password -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="form-check">
+                        <input asp-for="RememberMe" class="form-check-input" />
+                        <label asp-for="RememberMe" class="form-check-label">Remember Me</label>
+                    </div>
+                    <a asp-action="ForgotPassword" class="forgot-password-link">
+                        Forgot Password?
+                    </a>
+                </div>
+
+                <!-- Login Button -->
+                <div class="d-grid">
+                    <button type="submit" class="btn-login">
+                        <i class="bi bi-box-arrow-in-right"></i>Login to Account
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="login-footer">
+            <p class="footer-text">
+                Don't have an account?
+                <a asp-action="Register" class="register-link">Create Account</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

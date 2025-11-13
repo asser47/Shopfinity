@@ -1,0 +1,762 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+
+
+    @@keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+    }
+
+    @@keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    /* Dashboard Title */
+    .dashboard-title {
+        color: var(--dark-navy);
+        font-weight: 800;
+        font-size: 2rem;
+        margin-bottom: 2rem;
+        animation: fadeInUp 0.5s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+        .dashboard-title i {
+            color: var(--sage-green);
+            font-size: 2.2rem;
+        }
+
+    /* Inventory Alert */
+    .inventory-alert {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        border: 2px solid var(--warning-orange);
+        border-radius: 16px;
+        padding: 1.75rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
+        animation: fadeInUp 0.6s ease, pulse 2s ease-in-out infinite 2s;
+    }
+
+    .alert-heading {
+        color: #78350f;
+        font-weight: 800;
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .alert-heading i {
+            color: var(--warning-orange);
+            font-size: 1.5rem;
+        }
+
+    .inventory-alert p {
+        color: #78350f;
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    .inventory-alert strong {
+        font-weight: 700;
+    }
+
+    .btn-manage-inventory {
+        background: linear-gradient(135deg, var(--warning-orange), #fb923c);
+        border: none;
+        color: white;
+        padding: 0.65rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        transition: all 0.3s;
+        box-shadow: 0 3px 10px rgba(245, 158, 11, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .btn-manage-inventory:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+            color: white;
+        }
+
+    /* Statistics Cards */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        border: 2px solid var(--cream);
+        border-radius: 16px;
+        padding: 1.75rem;
+        box-shadow: 0 4px 15px rgba(49, 54, 71, 0.1);
+        transition: all 0.3s ease;
+        animation: fadeInUp 0.7s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30%;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            opacity: 0.1;
+            transition: all 0.3s;
+        }
+
+        .stat-card.primary::before {
+            background: linear-gradient(135deg, var(--dark-navy), var(--slate-blue));
+        }
+
+        .stat-card.success::before {
+            background: linear-gradient(135deg, var(--sage-green), #b5c599);
+        }
+
+        .stat-card.warning::before {
+            background: linear-gradient(135deg, var(--warning-orange), #fb923c);
+        }
+
+        .stat-card.info::before {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(49, 54, 71, 0.15);
+        }
+
+            .stat-card:hover::before {
+                opacity: 0.15;
+                transform: scale(1.2);
+            }
+
+    .stat-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .stat-card p {
+        color: var(--slate-blue);
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .stat-card h3 {
+        color: var(--dark-navy);
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-card small {
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .stat-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+    }
+
+    .stat-card.primary .stat-icon {
+        background: linear-gradient(135deg, var(--dark-navy), var(--slate-blue));
+    }
+
+    .stat-card.success .stat-icon {
+        background: linear-gradient(135deg, var(--sage-green), #b5c599);
+    }
+
+    .stat-card.warning .stat-icon {
+        background: linear-gradient(135deg, var(--warning-orange), #fb923c);
+    }
+
+    .stat-card.info .stat-icon {
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+    }
+
+    /* Low Stock Table */
+    .low-stock-card {
+        background: white;
+        border: 2px solid var(--cream);
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(49, 54, 71, 0.1);
+        overflow: hidden;
+        margin-bottom: 2rem;
+        animation: fadeInUp 0.8s ease;
+    }
+
+    .low-stock-header {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        border-bottom: 2px solid var(--warning-orange);
+        padding: 1.25rem 1.5rem;
+    }
+
+        .low-stock-header h5 {
+            color: #78350f;
+            font-weight: 800;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .low-stock-header i {
+            color: var(--warning-orange);
+            font-size: 1.3rem;
+        }
+
+    .low-stock-table {
+        margin: 0;
+    }
+
+        .low-stock-table thead {
+            background: linear-gradient(135deg, var(--cream), #fffae6);
+        }
+
+            .low-stock-table thead th {
+                color: var(--dark-navy);
+                font-weight: 700;
+                font-size: 0.9rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                padding: 1rem;
+                border: none;
+            }
+
+        .low-stock-table tbody tr {
+            border-bottom: 1px solid var(--cream);
+            transition: all 0.3s;
+        }
+
+            .low-stock-table tbody tr:hover {
+                background: rgba(163, 176, 135, 0.05);
+            }
+
+        .low-stock-table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+
+    .product-name-cell {
+        color: var(--dark-navy);
+        font-weight: 600;
+    }
+
+    .stock-badge-critical {
+        background: linear-gradient(135deg, var(--error-red), #c82333);
+        color: white;
+        padding: 0.4rem 0.9rem;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.85rem;
+    }
+
+    .stock-badge-warning {
+        background: linear-gradient(135deg, var(--warning-orange), #fb923c);
+        color: white;
+        padding: 0.4rem 0.9rem;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.85rem;
+    }
+
+    .status-critical {
+        color: var(--error-red);
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .status-low {
+        color: var(--warning-orange);
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .btn-update-stock {
+        background: linear-gradient(135deg, var(--sage-green), #b5c599);
+        border: none;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+        .btn-update-stock:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(163, 176, 135, 0.4);
+            color: white;
+        }
+
+    .card-footer-link {
+        background: linear-gradient(135deg, var(--cream), #fffae6);
+        border-top: 2px solid var(--cream);
+        padding: 1rem;
+        text-align: center;
+    }
+
+        .card-footer-link a {
+            color: var(--sage-green);
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+            .card-footer-link a:hover {
+                color: var(--dark-navy);
+            }
+
+    /* Quick Actions */
+    .quick-actions-card {
+        background: white;
+        border: 2px solid var(--cream);
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(49, 54, 71, 0.1);
+        overflow: hidden;
+        animation: fadeInUp 0.9s ease;
+    }
+
+    .quick-actions-header {
+        background: linear-gradient(135deg, var(--dark-navy), var(--slate-blue));
+        color: white;
+        padding: 1.25rem 1.5rem;
+    }
+
+        .quick-actions-header h5 {
+            margin: 0;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quick-actions-header i {
+            color: var(--sage-green);
+            font-size: 1.3rem;
+        }
+
+    .quick-actions-body {
+        padding: 2rem;
+    }
+
+    .action-buttons-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .action-btn {
+        padding: 2rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 700;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        border: none;
+    }
+
+        .action-btn i {
+            font-size: 2.5rem;
+        }
+
+    .btn-action-primary {
+        background: linear-gradient(135deg, var(--sage-green), #b5c599);
+        color: white;
+    }
+
+        .btn-action-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(163, 176, 135, 0.4);
+            color: white;
+        }
+
+    .btn-action-success {
+        background: linear-gradient(135deg, var(--dark-navy), var(--slate-blue));
+        color: white;
+    }
+
+        .btn-action-success:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(67, 86, 99, 0.4);
+            color: white;
+        }
+
+    .btn-action-info {
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+        color: white;
+    }
+
+        .btn-action-info:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+            color: white;
+        }
+
+    .btn-action-warning {
+        background: linear-gradient(135deg, var(--warning-orange), #fb923c);
+        color: white;
+    }
+
+        .btn-action-warning:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+            color: white;
+        }
+
+    /* System Status */
+    .system-status-card {
+        background: white;
+        border: 2px solid var(--cream);
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(49, 54, 71, 0.1);
+        overflow: hidden;
+        margin-top: 2rem;
+        animation: fadeInUp 1s ease;
+    }
+
+    .system-status-header {
+        background: linear-gradient(135deg, var(--cream), #fffae6);
+        border-bottom: 2px solid var(--cream);
+        padding: 1.25rem 1.5rem;
+    }
+
+        .system-status-header h5 {
+            color: var(--dark-navy);
+            font-weight: 800;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .system-status-header i {
+            color: var(--sage-green);
+            font-size: 1.3rem;
+        }
+
+    .system-status-body {
+        padding: 2rem;
+    }
+
+    .status-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+    }
+
+    .status-item {
+        text-align: center;
+        padding: 1.5rem;
+        border-radius: 12px;
+        transition: all 0.3s;
+        background: linear-gradient(135deg, var(--cream), #fffae6);
+    }
+
+        .status-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .status-item i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .status-item h6 {
+            color: var(--dark-navy);
+            font-weight: 700;
+            margin: 0;
+        }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .dashboard-title {
+            font-size: 1.5rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .action-buttons-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .status-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<h2 class="dashboard-title">
+    <i class="bi bi-speedometer2"></i>
+    Dashboard Overview
+</h2>
+
+<!-- Stock Alerts -->
+@if (ViewBag.LowStockCount > 0 || ViewBag.OutOfStockCount > 0)
+{
+    <div class="inventory-alert">
+        <h5 class="alert-heading">
+            <i class="bi bi-exclamation-triangle-fill"></i> Inventory Alerts
+        </h5>
+
+        @if (ViewBag.OutOfStockCount > 0)
+        {
+            <p class="mb-2">
+                <strong>⚠️ @ViewBag.OutOfStockCount product(s)</strong> are completely out of stock!
+            </p>
+        }
+
+        @if (ViewBag.LowStockCount > 0)
+        {
+            <p class="mb-3">
+                <strong>📉 @ViewBag.LowStockCount product(s)</strong> have low stock (≤10 items remaining).
+            </p>
+        }
+
+        <a asp-area="Admin" asp-controller="Product" asp-action="Index" class="btn-manage-inventory">
+            <i class="bi bi-box-seam"></i> Manage Inventory Now
+        </a>
+    </div>
+}
+
+<!-- Statistics Cards -->
+<div class="stats-grid">
+    <!-- Total Products -->
+    <div class="stat-card primary">
+        <div class="d-flex justify-content-between align-items-center stat-content">
+            <div>
+                <p>Total Products</p>
+                <h3>@ViewBag.TotalProducts</h3>
+                @if (ViewBag.OutOfStockCount > 0)
+                {
+                    <small class="text-danger">@ViewBag.OutOfStockCount out of stock</small>
+                }
+            </div>
+            <div class="stat-icon">
+                <i class="bi bi-box-seam-fill"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Categories -->
+    <div class="stat-card success">
+        <div class="d-flex justify-content-between align-items-center stat-content">
+            <div>
+                <p>Total Categories</p>
+                <h3>@ViewBag.TotalCategories</h3>
+            </div>
+            <div class="stat-icon">
+                <i class="bi bi-tags-fill"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Orders -->
+    <div class="stat-card warning">
+        <div class="d-flex justify-content-between align-items-center stat-content">
+            <div>
+                <p>Total Orders</p>
+                <h3>@ViewBag.TotalOrders</h3>
+            </div>
+            <div class="stat-icon">
+                <i class="bi bi-bag-check-fill"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Revenue -->
+    <div class="stat-card info">
+        <div class="d-flex justify-content-between align-items-center stat-content">
+            <div>
+                <p>Total Revenue</p>
+                <h3>@ViewBag.TotalRevenue.ToString("C")</h3>
+            </div>
+            <div class="stat-icon">
+                <i class="bi bi-currency-dollar"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Low Stock Products Table -->
+@if (ViewBag.LowStockProducts != null && ((IEnumerable<dynamic>)ViewBag.LowStockProducts).Any())
+{
+    <div class="low-stock-card">
+        <div class="low-stock-header">
+            <h5>
+                <i class="bi bi-exclamation-circle-fill"></i>
+                Low Stock Products (Top 5)
+            </h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table low-stock-table mb-0">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Category</th>
+                        <th>Current Stock</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in ViewBag.LowStockProducts)
+                    {
+                        <tr>
+                            <td class="product-name-cell">@product.Name</td>
+                            <td>@(product.Category?.Name ?? "N/A")</td>
+                            <td>
+                                <span class="@(product.Stock <= 5 ? "stock-badge-critical" : "stock-badge-warning")">
+                                    @product.Stock units
+                                </span>
+                            </td>
+                            <td>
+                                @if (product.Stock == 0)
+                                {
+                                    <span class="status-critical">
+                                        <i class="bi bi-x-circle-fill"></i> Out of Stock
+                                    </span>
+                                }
+                                else if (product.Stock <= 5)
+                                {
+                                    <span class="status-critical">
+                                        <i class="bi bi-exclamation-triangle-fill"></i> Critical
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="status-low">
+                                        <i class="bi bi-exclamation-circle-fill"></i> Low
+                                    </span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-area="Admin"
+                                   asp-controller="Product"
+                                   asp-action="Edit"
+                                   asp-route-id="@product.Id"
+                                   class="btn-update-stock">
+                                    <i class="bi bi-pencil-fill"></i> Update Stock
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer-link">
+            <a asp-area="Admin" asp-controller="Product" asp-action="Index">
+                View All Products <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+}
+
+<!-- Quick Actions -->
+<div class="quick-actions-card">
+    <div class="quick-actions-header">
+        <h5>
+            <i class="bi bi-lightning-fill"></i> Quick Actions
+        </h5>
+    </div>
+    <div class="quick-actions-body">
+        <div class="action-buttons-grid">
+            <a asp-area="Admin" asp-controller="Product" asp-action="Create" class="action-btn btn-action-primary">
+                <i class="bi bi-plus-circle-fill"></i>
+                <strong>Add Product</strong>
+            </a>
+
+            <a asp-area="Admin" asp-controller="Category" asp-action="Create" class="action-btn btn-action-success">
+                <i class="bi bi-plus-circle-fill"></i>
+                <strong>Add Category</strong>
+            </a>
+
+            <a asp-area="Admin" asp-controller="Order" asp-action="Index" class="action-btn btn-action-info">
+                <i class="bi bi-list-ul"></i>
+                <strong>View Orders</strong>
+            </a>
+
+            <a asp-area="Admin" asp-controller="Product" asp-action="Index" class="action-btn btn-action-warning">
+                <i class="bi bi-box-seam-fill"></i>
+                <strong>Manage Inventory</strong>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- System Status -->
+<div class="system-status-card">
+    <div class="system-status-header">
+        <h5>
+            <i class="bi bi-activity"></i> System Status
+        </h5>
+    </div>
+    <div class="system-status-body">
+        <div class="status-grid">
+            <div class="status-item">
+                <i class="bi bi-check-circle-fill text-success"></i>
+                <h6>All Systems Operational</h6>
+            </div>
+            <div class="status-item">
+                <i class="bi bi-graph-up" style="color: var(--sage-green);"></i>
+                <h6>@ViewBag.TotalOrders Orders Processed</h6>
+            </div>
+            <div class="status-item">
+                <i class="bi bi-shop" style="color: var(--slate-blue);"></i>
+                <h6>Active Shopfinity Platform</h6>
+            </div>
+        </div>
+    </div>
+</div>

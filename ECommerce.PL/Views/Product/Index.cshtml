@@ -1,0 +1,468 @@
+﻿@model ECommerce.PL.ViewModels.ProductFilterViewModel
+@{
+    ViewData["Title"] = "Products - Shopfinity";
+}
+
+<style>
+
+
+    /* Search & Filters */
+    .search-bar {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 12px rgba(49, 54, 71, 0.1);
+        margin-bottom: 2rem;
+        border: 2px solid var(--cream);
+        animation: fadeInDown 0.6s ease;
+    }
+
+    .search-input {
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 0.75rem 1.2rem;
+        font-size: 0.95rem;
+        transition: all 0.3s;
+    }
+
+        .search-input:focus {
+            border-color: var(--sage-green);
+            box-shadow: 0 0 0 3px rgba(163, 176, 135, 0.15);
+            outline: none;
+        }
+
+    .filter-select {
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 0.75rem 1.2rem;
+        font-size: 0.95rem;
+        transition: all 0.3s;
+    }
+
+        .filter-select:focus {
+            border-color: var(--sage-green);
+            box-shadow: 0 0 0 3px rgba(163, 176, 135, 0.15);
+            outline: none;
+        }
+
+    .btn-search {
+        background: linear-gradient(135deg, var(--sage-green), #b5c599);
+        border: none;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+        .btn-search:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(163, 176, 135, 0.4);
+            color: white;
+        }
+
+    .btn-clear {
+        background: white;
+        border: 2px solid var(--sage-green);
+        color: var(--dark-navy);
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-clear:hover {
+            background: var(--sage-green);
+            color: white;
+        }
+
+    /* Advanced Filters */
+    .filters-card {
+        background: white;
+        border: 2px solid var(--cream);
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(49, 54, 71, 0.08);
+        margin-bottom: 2rem;
+        animation: fadeInUp 0.8s ease;
+    }
+
+    .filters-header {
+        background: linear-gradient(135deg, var(--cream), #fff);
+        border-radius: 14px 14px 0 0;
+        padding: 1rem 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+        .filters-header:hover {
+            background: var(--cream);
+        }
+
+    /* Product Cards */
+    .product-card {
+        background: white;
+        border: 2px solid #f3f4f6;
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.4s;
+        box-shadow: 0 4px 12px rgba(49, 54, 71, 0.08);
+        height: 100%;
+        opacity: 0;
+        animation: fadeInUp 0.6s ease forwards;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .product-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .product-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .product-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .product-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .product-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .product-card:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+
+        .product-card:nth-child(7) {
+            animation-delay: 0.7s;
+        }
+
+        .product-card:nth-child(8) {
+            animation-delay: 0.8s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(49, 54, 71, 0.2);
+            border-color: var(--sage-green);
+        }
+
+    .product-image-wrapper {
+        position: relative;
+        height: 280px;
+        overflow: hidden;
+        background: linear-gradient(135deg, #f8fafc, var(--cream));
+        flex-shrink: 0;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+
+    .product-card:hover .product-image {
+        transform: scale(1.15) rotate(2deg);
+    }
+
+    .stock-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .product-body {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .product-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--dark-navy);
+        margin: 0 0 0.8rem 0;
+        line-height: 1.4;
+        transition: color 0.3s;
+    }
+
+    .product-card:hover .product-title {
+        color: var(--sage-green);
+    }
+
+    .product-description {
+        color: #6b7280;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin: 0 0 1rem 0;
+        /* Fixed height for consistent alignment */
+        height: 4.8em; /* 3 lines */
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+    }
+
+    /* Push price and buttons to bottom */
+    .product-actions {
+        margin-top: auto;
+    }
+
+    .product-price-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 1rem;
+        border-top: 2px solid var(--cream);
+        margin-bottom: 1rem;
+    }
+
+    .product-price {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--sage-green);
+        margin: 0;
+    }
+
+    .stock-indicator {
+        padding: 0.4rem 0.8rem;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .btn-view-details {
+        background: linear-gradient(135deg, var(--dark-navy), var(--slate-blue));
+        border: none;
+        color: white;
+        padding: 0.8rem;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+        .btn-view-details:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(49, 54, 71, 0.3);
+            color: white;
+        }
+
+    .btn-add-cart {
+        background: white;
+        border: 2px solid var(--sage-green);
+        color: var(--sage-green);
+        padding: 0.8rem;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+        .btn-add-cart:hover {
+            background: var(--sage-green);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(163, 176, 135, 0.4);
+        }
+
+    /* Empty State */
+    .empty-state {
+        background: white;
+        border-radius: 16px;
+        padding: 4rem 2rem;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(49, 54, 71, 0.1);
+        border: 2px solid var(--cream);
+        animation: fadeInUp 0.8s ease;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        color: var(--sage-green);
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .product-image-wrapper {
+            height: 220px;
+        }
+    }
+</style>
+
+<div class="container py-4">
+    <!-- Search & Quick Filters -->
+    <div class="search-bar">
+        <form asp-action="Index" method="get">
+            <div class="row g-3">
+                <div class="col-lg-4">
+                    <div class="input-group">
+                        <input type="text" name="searchTerm" value="@Model.SearchTerm"
+                               class="form-control search-input" placeholder="Search products...">
+                        <button type="submit" class="btn btn-search">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <select name="categoryId" class="form-select filter-select" asp-items="Model.Categories" onchange="this.form.submit()">
+                    </select>
+                </div>
+                <div class="col-lg-3">
+                    <select name="sortBy" class="form-select filter-select" asp-items="Model.SortOptions" asp-for="SortBy" onchange="this.form.submit()">
+                    </select>
+                </div>
+                <div class="col-lg-2">
+                    <a asp-action="Index" class="btn btn-clear w-100">
+                        <i class="bi bi-x-circle"></i> Clear
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Advanced Filters -->
+    <div class="filters-card">
+        <div class="filters-header" data-bs-toggle="collapse" data-bs-target="#advancedFilters">
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="fw-bold" style="color: var(--dark-navy);">
+                    <i class="bi bi-sliders"></i> Advanced Filters
+                </span>
+                <i class="bi bi-chevron-down" style="color: var(--sage-green);"></i>
+            </div>
+        </div>
+        <div class="collapse" id="advancedFilters">
+            <div class="card-body p-4">
+                <form asp-action="Index" method="get">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Min Price</label>
+                            <input type="number" name="minPrice" value="@Model.MinPrice"
+                                   class="form-control search-input" placeholder="$0" step="0.01">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Max Price</label>
+                            <input type="number" name="maxPrice" value="@Model.MaxPrice"
+                                   class="form-control search-input" placeholder="$999" step="0.01">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Availability</label>
+                            <select name="inStock" class="form-select filter-select">
+                                <option value="">All Products</option>
+                                <option value="true" selected="@(Model.InStock == true)">In Stock Only</option>
+                                <option value="false" selected="@(Model.InStock == false)">Out of Stock</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-search mt-3">
+                        <i class="bi bi-funnel"></i> Apply Filters
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Products Grid -->
+    @if (!Model.Products.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-inbox empty-icon"></i>
+            <h3 class="fw-bold mb-3" style="color: var(--dark-navy);">No Products Found</h3>
+            <p class="text-muted mb-4">We couldn't find any products matching your criteria.</p>
+            <a asp-action="Index" class="btn btn-search">
+                <i class="bi bi-grid"></i> View All Products
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var product in Model.Products)
+            {
+                <div class="col-sm-6 col-lg-4 col-xl-3">
+                    <div class="product-card">
+                        <!-- Image -->
+                        <div class="product-image-wrapper">
+                            <img src="@(product.ImageUrl ?? "/images/placeholder.jpg")"
+                                 class="product-image"
+                                 alt="@product.Name"
+                                 onerror="this.src='/images/placeholder.jpg'">
+
+                            @if (product.Stock == 0)
+                            {
+                                <span class="stock-badge bg-danger text-white">
+                                    Out of Stock
+                                </span>
+                            }
+                            else if (product.Stock <= 5)
+                            {
+                                <span class="stock-badge bg-warning text-dark">
+                                    Only @product.Stock left
+                                </span>
+                            }
+                        </div>
+
+                        <!-- Body -->
+                        <div class="product-body">
+                            <h5 class="product-title">@product.Name</h5>
+
+                            <p class="product-description">
+                                @if (product.Description?.Length > 80)
+                                {
+                                    @product.Description.Substring(0, 80)
+                        
+                                    <text>...</text>
+                                }
+                                else
+                                {
+                                    @product.Description
+                                }
+                            </p>
+
+                            <!-- Actions wrapper - pushes to bottom -->
+                            <div class="product-actions">
+                                <div class="product-price-section">
+                                    <h4 class="product-price">@product.Price.ToString("C")</h4>
+                                    <span class="stock-indicator bg-@(product.Stock > 10 ? "success" : product.Stock > 0 ? "warning" : "secondary") text-white">
+                                        @(product.Stock > 0 ? $"{product.Stock} in stock" : "Sold out")
+                                    </span>
+                                </div>
+
+                                <div class="d-grid gap-2">
+                                    <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-view-details">
+                                        <i class="bi bi-eye"></i> View Details
+                                    </a>
+
+                                    @if (product.Stock > 0)
+                                    {
+                                        <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                            <input type="hidden" name="productId" value="@product.Id" />
+                                            <input type="hidden" name="quantity" value="1" />
+                                            <button type="submit" class="btn btn-add-cart w-100">
+                                                <i class="bi bi-cart-plus"></i> Add to Cart
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

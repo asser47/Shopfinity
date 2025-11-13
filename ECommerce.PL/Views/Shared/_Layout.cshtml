@@ -1,0 +1,475 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Shopfinity</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--light-bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Premium Navigation Bar */
+        .navbar-premium {
+            background: white;
+            box-shadow: 0 2px 8px rgba(49, 54, 71, 0.08);
+            padding: 0;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid var(--cream);
+        }
+
+            .navbar-premium.scrolled {
+                box-shadow: 0 4px 12px rgba(49, 54, 71, 0.15);
+            }
+
+        .navbar-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+        }
+
+        /* Logo */
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--dark-navy);
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+            .brand-logo:hover {
+                transform: scale(1.05);
+                color: var(--sage-green);
+            }
+
+            .brand-logo i {
+                font-size: 1.8rem;
+                color: var(--sage-green);
+            }
+
+        /* Navigation Links */
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-link-modern {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 0.5rem 0;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+            .nav-link-modern::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background: var(--sage-green);
+                transition: width 0.3s ease;
+            }
+
+            .nav-link-modern:hover,
+            .nav-link-modern.active {
+                color: var(--sage-green);
+            }
+
+                .nav-link-modern:hover::after,
+                .nav-link-modern.active::after {
+                    width: 100%;
+                }
+
+        /* Action Buttons */
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .cart-button {
+            position: relative;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: color 0.3s;
+            text-decoration: none;
+        }
+
+            .cart-button:hover {
+                color: var(--sage-green);
+            }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--sage-green);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.15rem 0.4rem;
+            border-radius: 999px;
+            min-width: 18px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(163, 176, 135, 0.4);
+        }
+
+        /* User Dropdown */
+        .user-menu {
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sage-green), #b5c599);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s;
+            border: 2px solid var(--cream);
+        }
+
+            .user-avatar:hover {
+                transform: scale(1.1);
+                box-shadow: 0 4px 12px rgba(163, 176, 135, 0.3);
+            }
+
+        .dropdown-menu-modern {
+            position: absolute;
+            top: 120%;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(49, 54, 71, 0.15);
+            padding: 0.5rem;
+            min-width: 220px;
+            display: none;
+            z-index: 1000;
+            border: 2px solid var(--cream);
+        }
+
+            .dropdown-menu-modern.show {
+                display: block;
+            }
+
+        .dropdown-item-modern {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            color: var(--text);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+            .dropdown-item-modern:hover {
+                background: var(--cream);
+                color: var(--sage-green);
+            }
+
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 0.5rem 0;
+        }
+
+        /* Buttons */
+        .btn-modern {
+            padding: 0.6rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary-modern {
+            background: var(--sage-green);
+            color: white;
+        }
+
+            .btn-primary-modern:hover {
+                background: #91a076;
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(163, 176, 135, 0.3);
+                color: white;
+            }
+
+        .btn-outline-modern {
+            background: transparent;
+            color: var(--dark-navy);
+            border: 2px solid var(--sage-green);
+        }
+
+            .btn-outline-modern:hover {
+                background: var(--sage-green);
+                color: white;
+            }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        /* Footer */
+        .footer-modern {
+            background: var(--dark-navy);
+            color: var(--cream);
+            padding: 3rem 0 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-brand {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--sage-green);
+            margin-bottom: 1rem;
+        }
+
+        .footer-modern p {
+            color: rgba(255, 248, 212, 0.8);
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 9999;
+        }
+
+        .toast-modern {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(49, 54, 71, 0.2);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            min-width: 300px;
+            animation: slideIn 0.3s ease;
+            border-left: 4px solid var(--sage-green);
+        }
+
+        @@keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast-success {
+            border-left-color: var(--sage-green);
+        }
+
+            .toast-success i {
+                color: var(--sage-green);
+            }
+
+        .toast-error {
+            border-left-color: #ef4444;
+        }
+
+            .toast-error i {
+                color: #ef4444;
+            }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Premium Navigation -->
+    <nav class="navbar-premium sticky-top">
+        <div class="container navbar-container">
+            <!-- Logo -->
+            <a href="/" class="brand-logo">
+                <i class="bi bi-infinity"></i>
+                <span>Shopfinity</span>
+            </a>
+
+            <!-- Main Navigation -->
+            <ul class="nav-menu">
+                <li>
+                    <a href="/Product" class="nav-link-modern @(ViewContext.RouteData.Values["controller"]?.ToString() == "Product" ? "active" : "")">
+                        Products
+                    </a>
+                </li>
+                <li>
+                    <a href="/Category" class="nav-link-modern @(ViewContext.RouteData.Values["controller"]?.ToString() == "Category" ? "active" : "")">
+                        Categories
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Actions -->
+            <div class="nav-actions">
+                <!-- Cart -->
+                <a href="/Cart" class="cart-button">
+                    <i class="bi bi-bag"></i>
+                    <span class="cart-count">@await Component.InvokeAsync("CartBadge")</span>
+                </a>
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <!-- User Menu -->
+                    <div class="user-menu">
+                        <div class="user-avatar" onclick="toggleDropdown()">
+                            @User.Identity.Name?.Substring(0, 1).ToUpper()
+                        </div>
+                        <div class="dropdown-menu-modern" id="userDropdown">
+                            <div class="px-3 py-2">
+                                <div class="text-muted small">Signed in as</div>
+                                <div class="fw-bold">@User.Identity.Name</div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a href="/Order/MyOrders" class="dropdown-item-modern">
+                                <i class="bi bi-bag-check"></i> My Orders
+                            </a>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a href="/Admin/Dashboard" class="dropdown-item-modern">
+                                    <i class="bi bi-speedometer2"></i> Admin Panel
+                                </a>
+                            }
+                            <div class="dropdown-divider"></div>
+                            <form asp-controller="Account" asp-action="Logout" method="post">
+                                <button type="submit" class="dropdown-item-modern text-danger w-100 text-start" style="background: none; border: none;">
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <a href="/Account/Login" class="btn-modern btn-outline-modern">Login</a>
+                    <a href="/Account/Register" class="btn-modern btn-primary-modern">Sign Up</a>
+                }
+
+                <button class="mobile-menu-toggle">
+                    <i class="bi bi-list"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-modern">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="footer-brand">
+                        <i class="bi bi-infinity"></i> Shopfinity
+                    </div>
+                    <p>Your premium online shopping destination</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">&copy; 2024 Shopfinity. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="toast-modern toast-success">
+                <i class="bi bi-check-circle-fill fs-4"></i>
+                <div class="flex-grow-1">@TempData["SuccessMessage"]</div>
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="toast-modern toast-error">
+                <i class="bi bi-exclamation-triangle-fill fs-4"></i>
+                <div class="flex-grow-1">@TempData["ErrorMessage"]</div>
+            </div>
+        }
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function toggleDropdown() {
+            document.getElementById('userDropdown').classList.toggle('show');
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.user-menu')) {
+                document.getElementById('userDropdown')?.classList.remove('show');
+            }
+        });
+
+        setTimeout(() => {
+            document.querySelectorAll('.toast-modern').forEach(t => {
+                t.style.opacity = '0';
+                setTimeout(() => t.remove(), 300);
+            });
+        }, 5000);
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

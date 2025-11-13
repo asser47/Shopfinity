@@ -1,0 +1,19 @@
+﻿{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "ECommerce.PL": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:7152;http://localhost:5251",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "",
+        "DOTNET_WATCH_SUPPRESS_LAUNCH_BROWSER": "1",
+        "DOTNET_WATCH_SUPPRESS_BROWSER_REFRESH": "1"
+      },
+      "hotReloadEnabled": false,
+      "hotReloadProfile": "aspnetcore"
+    }
+  }
+}

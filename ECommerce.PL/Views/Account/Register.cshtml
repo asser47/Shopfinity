@@ -1,0 +1,488 @@
+﻿@model ECommerce.PL.ViewModels.Account.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Register - Shopfinity";
+}
+
+<style>
+    
+    @@keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Register Container */
+    .register-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem 1rem;
+    }
+
+    /* Register Card */
+    .register-card {
+        background: white;
+        border: 2px solid var(--cream);
+        border-radius: 24px;
+        box-shadow: 0 10px 40px rgba(49, 54, 71, 0.15);
+        overflow: hidden;
+        animation: fadeInUp 0.6s ease;
+        max-width: 700px;
+        width: 100%;
+    }
+
+    /* Card Header */
+    .register-header {
+        background: linear-gradient(135deg, var(--dark-navy), var(--slate-blue));
+        color: white;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .register-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(163, 176, 135, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+    .register-header-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .register-icon {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .register-title {
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .register-subtitle {
+        font-size: 1rem;
+        opacity: 0.9;
+        margin-top: 0.5rem;
+    }
+
+    /* Card Body */
+    .register-body {
+        padding: 2.5rem;
+    }
+
+    /* Form Elements */
+    .form-label {
+        color: var(--dark-navy);
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        border: 2px solid var(--cream);
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.3s;
+        border-radius: 8px;
+    }
+
+        .form-control:focus {
+            border-color: var(--sage-green);
+            box-shadow: 0 0 0 0.2rem rgba(163, 176, 135, 0.25);
+        }
+
+    /* User Type Selection */
+    .user-type-section {
+        background: linear-gradient(135deg, var(--cream), #fffae6);
+        border: 2px solid var(--cream);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .user-type-label {
+        color: var(--dark-navy);
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .btn-check:checked + .btn-type {
+        background: linear-gradient(135deg, var(--sage-green), #b5c599);
+        border-color: var(--sage-green);
+        color: white;
+    }
+
+    .btn-type {
+        border: 2px solid var(--sage-green);
+        color: var(--sage-green);
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        transition: all 0.3s;
+    }
+
+        .btn-type:hover {
+            background: var(--sage-green);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-type i {
+            margin-right: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+    .user-type-hint {
+        color: var(--slate-blue);
+        font-size: 0.85rem;
+        margin-top: 0.75rem;
+        display: block;
+    }
+
+    /* Section Dividers */
+    .section-divider {
+        color: var(--dark-navy);
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin: 2rem 0 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid var(--cream);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .section-divider i {
+            color: var(--sage-green);
+        }
+
+    /* Fields Animation */
+    #customerFields,
+    #buyerFields {
+        animation: fadeIn 0.4s ease;
+    }
+
+    /* Register Button */
+    .btn-register {
+        background: linear-gradient(135deg, var(--sage-green), #b5c599);
+        border: none;
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.05rem;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(163, 176, 135, 0.3);
+        width: 100%;
+    }
+
+        .btn-register:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(163, 176, 135, 0.5);
+            color: white;
+        }
+
+        .btn-register i {
+            margin-right: 0.5rem;
+        }
+
+    /* Footer Section */
+    .register-footer {
+        background: linear-gradient(135deg, var(--cream), #fffae6);
+        padding: 1.5rem;
+        text-align: center;
+        border-top: 2px solid var(--cream);
+    }
+
+    .footer-text {
+        color: var(--slate-blue);
+        margin: 0;
+        font-size: 0.95rem;
+    }
+
+    .login-link {
+        color: var(--sage-green);
+        text-decoration: none;
+        font-weight: 700;
+        transition: all 0.3s;
+    }
+
+        .login-link:hover {
+            color: var(--dark-navy);
+            text-decoration: underline;
+        }
+
+    /* Validation Messages */
+    .text-danger {
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: block;
+        animation: slideInRight 0.3s ease;
+    }
+
+    .validation-summary-errors {
+        background: #fee;
+        border: 2px solid #fcc;
+        border-radius: 12px;
+        padding: 1rem;
+        animation: slideInRight 0.3s ease;
+        margin-bottom: 1.5rem;
+    }
+
+        .validation-summary-errors ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .register-container {
+            padding: 2rem 1rem;
+        }
+
+        .register-body {
+            padding: 2rem 1.5rem;
+        }
+
+        .register-header {
+            padding: 2rem 1.5rem;
+        }
+
+        .register-icon {
+            font-size: 2.5rem;
+        }
+
+        .register-title {
+            font-size: 1.6rem;
+        }
+
+        .register-subtitle {
+            font-size: 0.9rem;
+        }
+
+        .btn-register {
+            font-size: 1rem;
+            padding: 0.9rem 1.5rem;
+        }
+
+        .btn-type {
+            padding: 0.65rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .user-type-section {
+            padding: 1.25rem;
+        }
+
+        .section-divider {
+            font-size: 1rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .register-container {
+            padding: 1.5rem 0.75rem;
+        }
+
+        .register-card {
+            border-radius: 20px;
+        }
+
+        .register-body {
+            padding: 1.5rem 1.25rem;
+        }
+
+        .register-header {
+            padding: 1.5rem 1.25rem;
+        }
+
+        .register-icon {
+            font-size: 2rem;
+        }
+
+        .register-title {
+            font-size: 1.4rem;
+        }
+
+        .btn-group {
+            flex-direction: column;
+        }
+
+        .btn-type {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+
+<div class="register-container">
+    <div class="register-card">
+        <!-- Header -->
+        <div class="register-header">
+            <div class="register-header-content">
+                <i class="bi bi-person-plus register-icon"></i>
+                <h3 class="register-title">Create Account</h3>
+                <p class="register-subtitle">Join Shopfinity today</p>
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="register-body">
+            <form asp-action="Register" method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <!-- User Type Selection -->
+                <div class="user-type-section">
+                    <label class="user-type-label">Account Type</label>
+                    <div class="btn-group w-100" role="group">
+                        <input type="radio" class="btn-check" name="UserType" id="typeCustomer" value="Customer" checked>
+                        <label class="btn btn-type" for="typeCustomer">
+                            <i class="bi bi-person-fill"></i>Customer
+                        </label>
+
+                        <input type="radio" class="btn-check" name="UserType" id="typeBuyer" value="Buyer">
+                        <label class="btn btn-type" for="typeBuyer">
+                            <i class="bi bi-briefcase-fill"></i>Buyer (Business)
+                        </label>
+                    </div>
+                    <small class="user-type-hint">Choose Customer for personal shopping or Buyer for business purchases</small>
+                </div>
+
+                <!-- Common Fields -->
+                <div class="mb-3">
+                    <label asp-for="FullName" class="form-label">Full Name</label>
+                    <input asp-for="FullName" class="form-control" placeholder="John Doe" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label">Email Address</label>
+                    <input asp-for="Email" class="form-control" placeholder="john@example.com" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <label asp-for="Password" class="form-label">Password</label>
+                        <input asp-for="Password" class="form-control" placeholder="••••••••" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="ConfirmPassword" class="form-label">Confirm Password</label>
+                        <input asp-for="ConfirmPassword" class="form-control" placeholder="••••••••" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Customer-specific fields -->
+                <div id="customerFields">
+                    <h5 class="section-divider">
+                        <i class="bi bi-person-badge-fill"></i>Customer Information
+                    </h5>
+                    <div class="row mb-3">
+                        <div class="col-md-8 mb-3 mb-md-0">
+                            <label asp-for="Address" class="form-label">Address</label>
+                            <input asp-for="Address" class="form-control" placeholder="123 Main St, City, Country" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
+                            <input asp-for="PhoneNumber" class="form-control" placeholder="+20 123 456 7890" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Buyer-specific fields -->
+                <div id="buyerFields" style="display: none;">
+                    <h5 class="section-divider">
+                        <i class="bi bi-building-fill"></i>Business Information
+                    </h5>
+                    <div class="row mb-3">
+                        <div class="col-md-8 mb-3 mb-md-0">
+                            <label asp-for="CompanyName" class="form-label">Company Name</label>
+                            <input asp-for="CompanyName" class="form-control" placeholder="Company Name Ltd." />
+                            <span asp-validation-for="CompanyName" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="TaxNumber" class="form-label">Tax Number</label>
+                            <input asp-for="TaxNumber" class="form-control" placeholder="123-456-789" />
+                            <span asp-validation-for="TaxNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Register Button -->
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn-register">
+                        <i class="bi bi-check-circle-fill"></i>Create Account
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="register-footer">
+            <p class="footer-text">
+                Already have an account?
+                <a asp-action="Login" class="login-link">Login here</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Toggle between Customer and Buyer fields
+        document.addEventListener('DOMContentLoaded', function() {
+            const customerRadio = document.getElementById('typeCustomer');
+            const buyerRadio = document.getElementById('typeBuyer');
+            const customerFields = document.getElementById('customerFields');
+            const buyerFields = document.getElementById('buyerFields');
+
+            function toggleFields() {
+                if (customerRadio.checked) {
+                    customerFields.style.display = 'block';
+                    buyerFields.style.display = 'none';
+                } else {
+                    customerFields.style.display = 'none';
+                    buyerFields.style.display = 'block';
+                }
+            }
+
+            customerRadio.addEventListener('change', toggleFields);
+            buyerRadio.addEventListener('change', toggleFields);
+        });
+    </script>
+}

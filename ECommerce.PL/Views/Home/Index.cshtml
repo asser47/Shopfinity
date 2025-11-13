@@ -1,0 +1,510 @@
+﻿@{
+    ViewData["Title"] = "Welcome to Shopfinity";
+}
+
+<style>
+    /* Color Palette */
+    :root {
+        --dark-navy: #313647;
+        --slate-blue: #435663;
+        --sage-green: #A3B087;
+        --cream: #FFF8D4;
+    }
+
+    /* Animations */
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @@keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @@keyframes float {
+        0%, 100% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+
+    @@keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+    }
+
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, var(--dark-navy) 0%, var(--slate-blue) 100%);
+        color: white;
+        padding: 6rem 0;
+        border-radius: 24px;
+        margin-bottom: 4rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(163,176,135,0.15)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') bottom;
+            background-size: cover;
+        }
+
+    /* Floating particles */
+    .particle {
+        position: absolute;
+        background: rgba(163, 176, 135, 0.2);
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite;
+    }
+
+        .particle:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .particle:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            top: 60%;
+            left: 80%;
+            animation-delay: 2s;
+        }
+
+        .particle:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            top: 40%;
+            left: 70%;
+            animation-delay: 4s;
+        }
+
+    .hero-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        line-height: 1.2;
+        animation: fadeInDown 1s ease;
+    }
+
+    .hero-subtitle {
+        font-size: 1.3rem;
+        opacity: 0.95;
+        margin-bottom: 2rem;
+        color: var(--cream);
+        animation: fadeInUp 1s ease 0.3s both;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        animation: fadeInUp 1s ease 0.6s both;
+    }
+
+    .btn-hero {
+        padding: 1rem 3rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        text-decoration: none;
+        transition: all 0.3s;
+        display: inline-block;
+    }
+
+    .btn-hero-primary {
+        background: var(--sage-green);
+        color: var(--dark-navy);
+        box-shadow: 0 4px 15px rgba(163, 176, 135, 0.3);
+    }
+
+        .btn-hero-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(163, 176, 135, 0.5);
+            animation: pulse 1s ease infinite;
+        }
+
+    .btn-hero-outline {
+        background: transparent;
+        color: white;
+        border: 3px solid var(--sage-green);
+    }
+
+        .btn-hero-outline:hover {
+            background: var(--sage-green);
+            color: var(--dark-navy);
+        }
+
+    /* Stats Section */
+    .stats-section {
+        background: linear-gradient(135deg, var(--dark-navy), var(--slate-blue));
+        padding: 3rem 0;
+        border-radius: 20px;
+        margin-bottom: 4rem;
+        box-shadow: 0 8px 24px rgba(49, 54, 71, 0.3);
+        animation: fadeInUp 1s ease 0.8s both;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 1.5rem;
+        transition: transform 0.3s;
+    }
+
+        .stat-item:hover {
+            transform: translateY(-10px);
+        }
+
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--sage-green);
+        display: block;
+        margin-bottom: 0.5rem;
+        animation: fadeInDown 1s ease 1s both;
+    }
+
+    .stat-label {
+        font-size: 1.1rem;
+        color: var(--cream);
+        font-weight: 500;
+    }
+
+    /* Features Section */
+    .features-section {
+        margin-bottom: 4rem;
+        padding: 3rem 0;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 3rem;
+        color: var(--dark-navy);
+        animation: fadeInDown 1s ease 1.2s both;
+    }
+
+    .feature-card {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 20px;
+        text-align: center;
+        transition: all 0.4s;
+        box-shadow: 0 4px 12px rgba(49, 54, 71, 0.1);
+        height: 100%;
+        border: 2px solid #f3f4f6;
+        opacity: 0;
+        animation: fadeInUp 1s ease forwards;
+    }
+
+        .feature-card:nth-child(1) {
+            animation-delay: 1.4s;
+        }
+
+        .feature-card:nth-child(2) {
+            animation-delay: 1.6s;
+        }
+
+        .feature-card:nth-child(3) {
+            animation-delay: 1.8s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(49, 54, 71, 0.2);
+            border-color: var(--sage-green);
+        }
+
+    .feature-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(135deg, var(--sage-green), #b5c599);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        color: white;
+        transition: all 0.3s;
+    }
+
+    .feature-card:hover .feature-icon {
+        transform: rotate(360deg) scale(1.1);
+    }
+
+    .feature-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--dark-navy);
+    }
+
+    .feature-description {
+        color: #6b7280;
+        line-height: 1.7;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        background: var(--cream);
+        color: var(--dark-navy);
+        padding: 4rem 0;
+        border-radius: 24px;
+        text-align: center;
+        margin-bottom: 4rem;
+        border: 3px solid var(--sage-green);
+        position: relative;
+        overflow: hidden;
+        animation: fadeInUp 1s ease 2s both;
+    }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(163, 176, 135, 0.1) 0%, transparent 70%);
+            animation: float 8s ease-in-out infinite;
+        }
+
+    .cta-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .cta-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .cta-subtitle {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        color: #6b7280;
+    }
+
+    .btn-cta {
+        background: var(--dark-navy);
+        color: white;
+        padding: 1rem 3rem;
+        border-radius: 50px;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(49, 54, 71, 0.3);
+    }
+
+        .btn-cta:hover {
+            background: var(--slate-blue);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(49, 54, 71, 0.4);
+            color: white;
+        }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+        }
+
+        .hero-buttons {
+            flex-direction: column;
+        }
+
+        .btn-hero {
+            width: 100%;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+        }
+
+        .particle {
+            display: none;
+        }
+    }
+</style>
+
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+
+    <div class="container hero-content text-center">
+        <h1 class="hero-title">Welcome to Shopfinity</h1>
+        <p class="hero-subtitle">
+            Discover amazing products at unbeatable prices.<br>
+            Your perfect shopping experience starts here.
+        </p>
+        <div class="hero-buttons justify-content-center">
+            <a href="/Product" class="btn-hero btn-hero-primary">
+                <i class="bi bi-grid-fill me-2"></i>Browse Products
+            </a>
+            <a href="/Category" class="btn-hero btn-hero-outline">
+                <i class="bi bi-tags-fill me-2"></i>Categories
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<div class="stats-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="stat-item">
+                    <span class="stat-number">1000+</span>
+                    <span class="stat-label">Happy Customers</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-item">
+                    <span class="stat-number">5000+</span>
+                    <span class="stat-label">Products</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Satisfaction</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="features-section">
+    <div class="container">
+        <h2 class="section-title">Why Choose Shopfinity?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-truck"></i>
+                    </div>
+                    <h3 class="feature-title">Free Shipping</h3>
+                    <p class="feature-description">
+                        Enjoy free shipping on all orders over $50. Fast and reliable delivery to your doorstep.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h3 class="feature-title">Secure Payment</h3>
+                    <p class="feature-description">
+                        Shop with confidence. All transactions are 100% secure with SSL encryption.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </div>
+                    <h3 class="feature-title">Easy Returns</h3>
+                    <p class="feature-description">
+                        Not satisfied? No problem. 30-day hassle-free return policy on all items.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="cta-section">
+    <div class="cta-content container">
+        <h2 class="cta-title">Ready to Start Shopping?</h2>
+        <p class="cta-subtitle">Join thousands of happy customers today!</p>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a href="/Product" class="btn-cta">
+                <i class="bi bi-bag-fill me-2"></i>Start Shopping
+            </a>
+        }
+        else
+        {
+            <a href="/Account/Register" class="btn-cta">
+                <i class="bi bi-person-plus-fill me-2"></i>Create Free Account
+            </a>
+        }
+    </div>
+</div>

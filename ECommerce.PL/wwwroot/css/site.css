@@ -1,0 +1,45 @@
+html {
+  font-size: 14px;
+}
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  margin-bottom: 60px;
+  font-family: 'Poppins', sans-serif;
+  background: var(--light-bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+:root {
+    --dark-navy: #313647;
+    --slate-blue: #435663;
+    --sage-green: #A3B087;
+    --cream: #FFF8D4;
+    --light-bg: #fafafa;
+    --border: #e5e7eb;
+    --text: #313647;
+    --text-light: #6b7280;
+}
+@keyframes fadeInUp {...}
+@keyframes fadeInDown {...}
+@keyframes slideInLeft {...}
+@keyframes slideInRight {...}
+@keyframes scaleIn {...}
+@keyframes bounce {...}
+/* Reusable Button Styles */
+.btn-primary-modern {...}
+.btn-outline-modern {...}
+.card-modern {...}
+.badge-success-modern {...}
+.badge-warning-modern {...}
+.badge-danger-modern {...}

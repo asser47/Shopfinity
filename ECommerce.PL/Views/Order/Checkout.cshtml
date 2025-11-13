@@ -1,0 +1,411 @@
+﻿@model ECommerce.PL.ViewModels.CheckoutViewModel
+@{
+    ViewData["Title"] = "Checkout - Shopfinity";
+}
+
+<style>
+    @@keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    /* Header */
+    .checkout-header {
+        background: linear-gradient(135deg, var(--dark-navy), var(--slate-blue));
+        color: white;
+        padding: 2.5rem;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInDown 0.6s ease;
+    }
+
+        .checkout-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(163, 176, 135, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+    .checkout-title {
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Cards */
+    .checkout-card {
+        background: white;
+        border: 2px solid var(--cream);
+        border-radius: 20px;
+        box-shadow: 0 4px 15px rgba(49, 54, 71, 0.1);
+        overflow: hidden;
+        animation: slideInLeft 0.8s ease;
+    }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, var(--cream), #fff);
+        padding: 1.5rem;
+        border-bottom: 2px solid var(--sage-green);
+    }
+
+        .card-header-custom h5 {
+            margin: 0;
+            color: var(--dark-navy);
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+    .card-body-custom {
+        padding: 2rem;
+    }
+
+    /* Form Elements */
+    .form-label {
+        color: var(--dark-navy);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        border: 2px solid var(--cream);
+        border-radius: 12px;
+        padding: 0.8rem 1rem;
+        transition: all 0.3s;
+        color: var(--dark-navy);
+    }
+
+        .form-control:focus {
+            border-color: var(--sage-green);
+            box-shadow: 0 0 0 3px rgba(163, 176, 135, 0.15);
+            outline: none;
+        }
+
+    textarea.form-control {
+        resize: vertical;
+    }
+
+    /* Summary Card */
+    .summary-card {
+        background: white;
+        border: 2px solid var(--sage-green);
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(163, 176, 135, 0.2);
+        overflow: hidden;
+        position: sticky;
+        top: 20px;
+        animation: fadeInUp 0.8s ease;
+    }
+
+    .summary-header {
+        background: linear-gradient(135deg, var(--sage-green), #b5c599);
+        padding: 1.5rem;
+        color: white;
+    }
+
+        .summary-header h5 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+    .summary-body {
+        padding: 1.5rem;
+    }
+
+    .item-count {
+        background: var(--cream);
+        padding: 1rem;
+        border-radius: 12px;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        border: 2px solid var(--sage-green);
+    }
+
+    .item-count-number {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--sage-green);
+        display: block;
+    }
+
+    .item-count-label {
+        color: var(--slate-blue);
+        font-weight: 600;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.8rem 0;
+        color: var(--dark-navy);
+    }
+
+    .summary-divider {
+        height: 2px;
+        background: var(--cream);
+        margin: 1rem 0;
+    }
+
+    .summary-total {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 0;
+        border-top: 3px solid var(--sage-green);
+        margin-top: 1rem;
+    }
+
+        .summary-total h4 {
+            color: var(--sage-green);
+            font-weight: 800;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+    /* Buttons */
+    .btn-place-order {
+        background: linear-gradient(135deg, var(--sage-green), #b5c599);
+        border: none;
+        color: white;
+        padding: 1.2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.2rem;
+        width: 100%;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(163, 176, 135, 0.3);
+    }
+
+        .btn-place-order:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(163, 176, 135, 0.5);
+            color: white;
+        }
+
+    /* Security Badge */
+    .security-badge {
+        background: var(--cream);
+        padding: 1rem;
+        border-radius: 12px;
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+
+    .security-icon {
+        font-size: 2.5rem;
+        color: var(--sage-green);
+        margin-bottom: 0.5rem;
+    }
+
+    .security-text {
+        color: var(--slate-blue);
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    /* Step Indicator */
+    .checkout-steps {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        animation: fadeInDown 0.8s ease 0.2s both;
+    }
+
+    .step {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.8rem 1.5rem;
+        background: white;
+        border: 2px solid var(--cream);
+        border-radius: 25px;
+        color: var(--slate-blue);
+        font-weight: 600;
+    }
+
+        .step.active {
+            background: var(--sage-green);
+            color: white;
+            border-color: var(--sage-green);
+        }
+
+    .step-number {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--cream);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: var(--dark-navy);
+    }
+
+    .step.active .step-number {
+        background: white;
+        color: var(--sage-green);
+    }
+</style>
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="checkout-header">
+        <div class="text-center">
+            <h1 class="checkout-title">
+                <i class="bi bi-credit-card-fill me-2"></i>Secure Checkout
+            </h1>
+        </div>
+    </div>
+
+    <!-- Checkout Steps -->
+    <div class="checkout-steps">
+        <div class="step">
+            <span class="step-number">1</span>
+            <span>Cart</span>
+        </div>
+        <div class="step active">
+            <span class="step-number">2</span>
+            <span>Checkout</span>
+        </div>
+        <div class="step">
+            <span class="step-number">3</span>
+            <span>Confirmation</span>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Shipping Form -->
+        <div class="col-lg-7">
+            <div class="checkout-card">
+                <div class="card-header-custom">
+                    <h5>
+                        <i class="bi bi-truck me-2"></i>Shipping Information
+                    </h5>
+                </div>
+                <div class="card-body-custom">
+                    <form asp-action="Checkout" method="post">
+                        <div class="mb-4">
+                            <label asp-for="ShippingAddress" class="form-label">
+                                <i class="bi bi-geo-alt-fill me-2"></i>Shipping Address
+                            </label>
+                            <textarea asp-for="ShippingAddress" class="form-control" rows="3"
+                                      placeholder="Enter your complete shipping address" required></textarea>
+                            <span asp-validation-for="ShippingAddress" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="PhoneNumber" class="form-label">
+                                <i class="bi bi-telephone-fill me-2"></i>Phone Number
+                            </label>
+                            <input asp-for="PhoneNumber" class="form-control" type="tel"
+                                   placeholder="Enter your phone number" required />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Notes" class="form-label">
+                                <i class="bi bi-chat-left-text-fill me-2"></i>Order Notes (Optional)
+                            </label>
+                            <textarea asp-for="Notes" class="form-control" rows="2"
+                                      placeholder="Any special instructions for delivery?"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                        </div>
+
+                        <!-- Hidden fields -->
+                        <input type="hidden" asp-for="Subtotal" />
+                        <input type="hidden" asp-for="Tax" />
+                        <input type="hidden" asp-for="ShippingCost" />
+                        <input type="hidden" asp-for="Total" />
+                        <input type="hidden" asp-for="ItemCount" />
+
+                        <button type="submit" class="btn-place-order">
+                            <i class="bi bi-check-circle-fill me-2"></i>Place Order
+                        </button>
+
+                        <div class="security-badge">
+                            <i class="bi bi-shield-check-fill security-icon"></i>
+                            <p class="security-text">
+                                <strong>Secure Checkout:</strong> Your information is protected with SSL encryption
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="col-lg-5">
+            <div class="summary-card">
+                <div class="summary-header">
+                    <h5>
+                        <i class="bi bi-receipt-cutoff me-2"></i>Order Summary
+                    </h5>
+                </div>
+                <div class="summary-body">
+                    <!-- Item Count -->
+                    <div class="item-count">
+                        <span class="item-count-number">@Model.ItemCount</span>
+                        <span class="item-count-label">Items in Cart</span>
+                    </div>
+
+                    <!-- Price Breakdown -->
+                    <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <strong>@Model.Subtotal.ToString("C")</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax (14%):</span>
+                        <strong>@Model.Tax.ToString("C")</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping:</span>
+                        <strong>@Model.ShippingCost.ToString("C")</strong>
+                    </div>
+
+                    <!-- Total -->
+                    <div class="summary-total">
+                        <h4>Total Amount:</h4>
+                        <h4>@Model.Total.ToString("C")</h4>
+                    </div>
+
+                    <!-- Trust Badges -->
+                    <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 2px solid var(--cream);">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <i class="bi bi-shield-check" style="font-size: 2rem; color: var(--sage-green);"></i>
+                                <p class="small mb-0 mt-2" style="color: var(--slate-blue);">Secure</p>
+                            </div>
+                            <div class="col-4">
+                                <i class="bi bi-truck" style="font-size: 2rem; color: var(--sage-green);"></i>
+                                <p class="small mb-0 mt-2" style="color: var(--slate-blue);">Fast Ship</p>
+                            </div>
+                            <div class="col-4">
+                                <i class="bi bi-arrow-repeat" style="font-size: 2rem; color: var(--sage-green);"></i>
+                                <p class="small mb-0 mt-2" style="color: var(--slate-blue);">Returns</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

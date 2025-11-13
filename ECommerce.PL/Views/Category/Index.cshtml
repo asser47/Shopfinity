@@ -1,0 +1,305 @@
+﻿@model IEnumerable<ECommerce.PL.ViewModels.CategoryViewModel>
+@{
+    ViewData["Title"] = "Categories - Shopfinity";
+}
+
+<style>
+
+
+    @@keyframes scaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    /* Header Section */
+    .categories-header {
+        background: linear-gradient(135deg, var(--dark-navy), var(--slate-blue));
+        color: white;
+        padding: 3rem 0;
+        border-radius: 20px;
+        margin-bottom: 3rem;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInDown 0.8s ease;
+    }
+
+        .categories-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(163, 176, 135, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .categories-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .categories-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+    /* Category Card */
+    .category-card {
+        background: white;
+        border: 2px solid var(--cream);
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 4px 15px rgba(49, 54, 71, 0.1);
+        height: 100%;
+        opacity: 0;
+        animation: scaleIn 0.6s ease forwards;
+        position: relative;
+    }
+
+        .category-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .category-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .category-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .category-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .category-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .category-card:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--sage-green), #b5c599);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .category-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .category-card:hover {
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(49, 54, 71, 0.2);
+            border-color: var(--sage-green);
+        }
+
+    .category-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(135deg, var(--sage-green), #b5c599);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        color: white;
+        transition: all 0.4s;
+        box-shadow: 0 4px 15px rgba(163, 176, 135, 0.3);
+    }
+
+    .category-card:hover .category-icon {
+        transform: rotate(360deg) scale(1.1);
+        box-shadow: 0 8px 25px rgba(163, 176, 135, 0.5);
+    }
+
+    .category-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--dark-navy);
+        margin-bottom: 1rem;
+        transition: color 0.3s;
+    }
+
+    .category-card:hover .category-title {
+        color: var(--sage-green);
+    }
+
+    .category-description {
+        color: #6b7280;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        min-height: 50px;
+    }
+
+    .product-count-badge {
+        display: inline-block;
+        background: var(--cream);
+        color: var(--dark-navy);
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+        border: 2px solid var(--sage-green);
+    }
+
+    /* Buttons */
+    .btn-view-products {
+        background: linear-gradient(135deg, var(--sage-green), #b5c599);
+        border: none;
+        color: white;
+        padding: 0.8rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(163, 176, 135, 0.3);
+    }
+
+        .btn-view-products:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(163, 176, 135, 0.5);
+            color: white;
+        }
+
+    .btn-details {
+        background: white;
+        border: 2px solid var(--sage-green);
+        color: var(--dark-navy);
+        padding: 0.8rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+        .btn-details:hover {
+            background: var(--sage-green);
+            color: white;
+            border-color: var(--sage-green);
+        }
+
+    /* Empty State */
+    .empty-state {
+        background: white;
+        border: 2px solid var(--cream);
+        border-radius: 20px;
+        padding: 4rem 2rem;
+        text-align: center;
+        animation: fadeInUp 0.8s ease;
+    }
+
+    .empty-state-icon {
+        font-size: 5rem;
+        color: var(--sage-green);
+        opacity: 0.5;
+        margin-bottom: 1.5rem;
+    }
+
+    .empty-state h3 {
+        color: var(--dark-navy);
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="categories-header text-center">
+        <div class="container">
+            <h1>Explore Our Categories</h1>
+            <p>Find exactly what you're looking for</p>
+        </div>
+    </div>
+
+    <!-- Categories Grid -->
+    @if (Model == null || !Model.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-inbox empty-state-icon"></i>
+            <h3>No Categories Available</h3>
+            <p class="text-muted mb-4">Categories will appear here once they're added to the store.</p>
+            <a asp-controller="Product" asp-action="Index" class="btn btn-view-products">
+                <i class="bi bi-grid-fill"></i> Browse All Products
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var category in Model)
+            {
+                <div class="col">
+                    <div class="category-card">
+                        <div class="card-body text-center p-4">
+                            <!-- Icon -->
+                            <div class="category-icon">
+                                <i class="bi bi-tag-fill"></i>
+                            </div>
+
+                            <!-- Title -->
+                            <h5 class="category-title">@category.Name</h5>
+
+                            <!-- Description -->
+                            <p class="category-description">
+                                @if (string.IsNullOrEmpty(category.Description))
+                                {
+                                    <span class="text-muted fst-italic">Discover amazing products in this category</span>
+                                }
+                                else
+                                {
+                                    @category.Description
+                                }
+                            </p>
+
+                            <!-- Product Count Badge -->
+                            <div class="product-count-badge">
+                                <i class="bi bi-box-seam-fill me-2"></i>@category.ProductCount Products
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="d-grid gap-2">
+                                <a asp-controller="Category"
+                                   asp-action="Products"
+                                   asp-route-id="@category.Id"
+                                   class="btn btn-view-products">
+                                    <i class="bi bi-grid-fill me-2"></i>View Products
+                                </a>
+                                <a asp-controller="Category"
+                                   asp-action="Details"
+                                   asp-route-id="@category.Id"
+                                   class="btn btn-details">
+                                    <i class="bi bi-info-circle-fill me-2"></i>More Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

@@ -1,0 +1,582 @@
+﻿@model IEnumerable<ECommerce.DAL.Models.Order>
+@{
+    ViewData["Title"] = "Orders Management - Shopfinity Admin";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+
+    /* Page Container */
+    .orders-container {
+        padding: 2rem 0;
+        animation: fadeInUp 0.5s ease;
+    }
+
+    /* Page Header */
+    .page-header {
+        background: linear-gradient(135deg, var(--dark-navy), var(--slate-blue));
+        color: white;
+        padding: 2rem;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInDown 0.6s ease;
+    }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(163, 176, 135, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+    .page-header-content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .page-icon {
+        font-size: 2.5rem;
+    }
+
+    .page-title-group h2 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .page-subtitle {
+        font-size: 0.95rem;
+        opacity: 0.9;
+        margin: 0.25rem 0 0 0;
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        border: 2px solid var(--cream);
+        border-radius: 14px;
+        padding: 1.25rem 1.5rem;
+        box-shadow: 0 2px 10px rgba(49, 54, 71, 0.08);
+        transition: all 0.3s;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(49, 54, 71, 0.12);
+        }
+
+    .stat-label {
+        color: var(--slate-blue);
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+        color: var(--dark-navy);
+        font-size: 1.8rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .stat-icon {
+        font-size: 1.5rem;
+        color: var(--sage-green);
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+        background: white;
+        border: 2px solid var(--cream);
+        border-radius: 14px;
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 10px rgba(49, 54, 71, 0.08);
+    }
+
+    .filter-title {
+        color: var(--dark-navy);
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .filter-title i {
+            color: var(--sage-green);
+            font-size: 1.1rem;
+        }
+
+    .filter-buttons {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .filter-btn {
+        background: linear-gradient(135deg, var(--cream), #fffae6);
+        border: 2px solid var(--cream);
+        color: var(--slate-blue);
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--sage-green);
+            border-color: var(--sage-green);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    /* Table Card */
+    .table-card {
+        background: white;
+        border: 2px solid var(--cream);
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(49, 54, 71, 0.1);
+        overflow: hidden;
+    }
+
+    /* Table Styling */
+    .orders-table {
+        margin: 0;
+        width: 100%;
+    }
+
+        .orders-table thead {
+            background: linear-gradient(135deg, var(--cream), #fffae6);
+        }
+
+            .orders-table thead th {
+                color: var(--dark-navy);
+                font-weight: 700;
+                font-size: 0.9rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                padding: 1.25rem 1rem;
+                border: none;
+            }
+
+        .orders-table tbody tr {
+            transition: all 0.3s;
+            border-bottom: 1px solid var(--cream);
+        }
+
+            .orders-table tbody tr:hover {
+                background: rgba(163, 176, 135, 0.05);
+                transform: scale(1.005);
+            }
+
+        .orders-table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            color: var(--slate-blue);
+            font-size: 0.95rem;
+        }
+
+    /* Order ID Badge */
+    .order-id-badge {
+        background: linear-gradient(135deg, var(--slate-blue), #6b7280);
+        color: white;
+        padding: 0.35rem 0.75rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        display: inline-block;
+    }
+
+    /* Customer Email */
+    .customer-email {
+        color: var(--dark-navy);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .customer-email i {
+            color: var(--sage-green);
+            font-size: 1rem;
+        }
+
+    /* Order Date */
+    .order-date {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--slate-blue);
+    }
+
+        .order-date i {
+            color: var(--sage-green);
+            font-size: 1rem;
+        }
+
+    /* Order Total */
+    .order-total {
+        color: var(--sage-green);
+        font-weight: 700;
+        font-size: 1.05rem;
+    }
+
+    /* Status Badges */
+    .status-badge-pending {
+        background: linear-gradient(135deg, var(--warning-orange), #fb923c);
+        color: white;
+        padding: 0.4rem 0.9rem;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: inline-block;
+    }
+
+    .status-badge-processing {
+        background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        color: white;
+        padding: 0.4rem 0.9rem;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: inline-block;
+    }
+
+    .status-badge-shipped {
+        background: linear-gradient(135deg, var(--slate-blue), #6b7280);
+        color: white;
+        padding: 0.4rem 0.9rem;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: inline-block;
+    }
+
+    .status-badge-delivered {
+        background: linear-gradient(135deg, var(--sage-green), #b5c599);
+        color: white;
+        padding: 0.4rem 0.9rem;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: inline-block;
+    }
+
+    .status-badge-cancelled {
+        background: linear-gradient(135deg, var(--error-red), #c82333);
+        color: white;
+        padding: 0.4rem 0.9rem;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: inline-block;
+    }
+
+    /* Action Button */
+    .btn-view-details {
+        background: linear-gradient(135deg, var(--sage-green), #b5c599);
+        border: none;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+        .btn-view-details:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(163, 176, 135, 0.4);
+            color: white;
+        }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+
+    .empty-icon {
+        font-size: 5rem;
+        color: var(--sage-green);
+        opacity: 0.3;
+        margin-bottom: 1.5rem;
+    }
+
+    .empty-title {
+        color: var(--dark-navy);
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .empty-text {
+        color: var(--slate-blue);
+        margin-bottom: 2rem;
+    }
+
+    /* Responsive */
+    @@media (max-width: 992px) {
+        .orders-table {
+            font-size: 0.85rem;
+        }
+
+            .orders-table thead th,
+            .orders-table tbody td {
+                padding: 0.75rem 0.5rem;
+            }
+    }
+
+    @@media (max-width: 768px) {
+        .page-header {
+            padding: 1.5rem;
+        }
+
+        .page-title-group h2 {
+            font-size: 1.5rem;
+        }
+
+        .page-icon {
+            font-size: 2rem;
+        }
+
+        .stats-bar {
+            grid-template-columns: 1fr;
+        }
+
+        .filter-buttons {
+            flex-direction: column;
+        }
+
+        .filter-btn {
+            width: 100%;
+        }
+
+        .table-responsive {
+            border-radius: 20px;
+            overflow-x: auto;
+        }
+
+        .customer-email,
+        .order-date {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .orders-table thead th {
+            padding: 1rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .orders-table tbody td {
+            padding: 0.75rem 0.5rem;
+            font-size: 0.85rem;
+        }
+    }
+</style>
+
+<div class="orders-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <i class="bi bi-bag-check-fill page-icon"></i>
+            <div class="page-title-group">
+                <h2>Orders Management</h2>
+                <p class="page-subtitle">Track and manage all Shopfinity orders</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="stat-card">
+            <div class="stat-label">Total Orders</div>
+            <div class="stat-value">
+                <i class="bi bi-receipt stat-icon"></i>
+                <span>@Model.Count()</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Pending Orders</div>
+            <div class="stat-value">
+                <i class="bi bi-clock stat-icon"></i>
+                <span>@Model.Count(o => o.Status == ECommerce.DAL.Enums.OrderStatus.Pending)</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Processing</div>
+            <div class="stat-value">
+                <i class="bi bi-gear stat-icon"></i>
+                <span>@Model.Count(o => o.Status == ECommerce.DAL.Enums.OrderStatus.Processing)</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Shipped</div>
+            <div class="stat-value">
+                <i class="bi bi-truck stat-icon"></i>
+                <span>@Model.Count(o => o.Status == ECommerce.DAL.Enums.OrderStatus.Shipped)</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Delivered</div>
+            <div class="stat-value">
+                <i class="bi bi-check-circle stat-icon"></i>
+                <span>@Model.Count(o => o.Status == ECommerce.DAL.Enums.OrderStatus.Delivered)</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Total Revenue</div>
+            <div class="stat-value">
+                <i class="bi bi-currency-dollar stat-icon"></i>
+                <span style="font-size: 1.4rem;">@Model.Sum(o => o.TotalAmount).ToString("C")</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <div class="filter-title">
+            <i class="bi bi-funnel-fill"></i>
+            Quick Filter
+        </div>
+        <div class="filter-buttons">
+            <button class="filter-btn active">
+                <i class="bi bi-card-list me-1"></i>All Orders (@Model.Count())
+            </button>
+            <button class="filter-btn">
+                <i class="bi bi-clock me-1"></i>Pending (@Model.Count(o => o.Status == ECommerce.DAL.Enums.OrderStatus.Pending))
+            </button>
+            <button class="filter-btn">
+                <i class="bi bi-gear me-1"></i>Processing (@Model.Count(o => o.Status == ECommerce.DAL.Enums.OrderStatus.Processing))
+            </button>
+            <button class="filter-btn">
+                <i class="bi bi-truck me-1"></i>Shipped (@Model.Count(o => o.Status == ECommerce.DAL.Enums.OrderStatus.Shipped))
+            </button>
+            <button class="filter-btn">
+                <i class="bi bi-check-circle me-1"></i>Delivered (@Model.Count(o => o.Status == ECommerce.DAL.Enums.OrderStatus.Delivered))
+            </button>
+        </div>
+    </div>
+
+    <!-- Table Card -->
+    <div class="table-card">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table orders-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Order Date</th>
+                            <th>Total Amount</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model.OrderByDescending(o => o.OrderDate))
+                        {
+                            <tr>
+                                <td>
+                                    <span class="order-id-badge">
+                                        #@order.Id
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="customer-email">
+                                        <i class="bi bi-person-fill"></i>
+                                        <span>@order.User?.Email</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="order-date">
+                                        <i class="bi bi-calendar-event"></i>
+                                        <span>@order.OrderDate.ToString("MMM dd, yyyy")</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="order-total">@order.TotalAmount.ToString("C")</span>
+                                </td>
+                                <td>
+                                    @if (order.Status == ECommerce.DAL.Enums.OrderStatus.Pending)
+                                    {
+                                        <span class="status-badge-pending">
+                                            <i class="bi bi-clock-fill me-1"></i>Pending
+                                        </span>
+                                    }
+                                    else if (order.Status == ECommerce.DAL.Enums.OrderStatus.Processing)
+                                    {
+                                        <span class="status-badge-processing">
+                                            <i class="bi bi-gear-fill me-1"></i>Processing
+                                        </span>
+                                    }
+                                    else if (order.Status == ECommerce.DAL.Enums.OrderStatus.Shipped)
+                                    {
+                                        <span class="status-badge-shipped">
+                                            <i class="bi bi-truck me-1"></i>Shipped
+                                        </span>
+                                    }
+                                    else if (order.Status == ECommerce.DAL.Enums.OrderStatus.Delivered)
+                                    {
+                                        <span class="status-badge-delivered">
+                                            <i class="bi bi-check-circle-fill me-1"></i>Delivered
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-badge-cancelled">
+                                            <i class="bi bi-x-circle-fill me-1"></i>Cancelled
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@order.Id" class="btn-view-details">
+                                        <i class="bi bi-eye-fill"></i>View Details
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="bi bi-inbox empty-icon"></i>
+                <h3 class="empty-title">No Orders Yet</h3>
+                <p class="empty-text">Orders will appear here once customers start placing them.</p>
+            </div>
+        }
+    </div>
+</div>

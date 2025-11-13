@@ -1,0 +1,310 @@
+﻿@model List<ECommerce.PL.ViewModels.OrderViewModel>
+@{
+    ViewData["Title"] = "My Orders - Shopfinity";
+}
+
+<style>
+
+    /* Header */
+    .orders-header {
+        background: linear-gradient(135deg, var(--dark-navy), var(--slate-blue));
+        color: white;
+        padding: 2.5rem;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInDown 0.6s ease;
+    }
+
+        .orders-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(163, 176, 135, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+    .orders-title {
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Order Card */
+    .order-card {
+        background: white;
+        border: 2px solid var(--cream);
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(49, 54, 71, 0.1);
+        margin-bottom: 1.5rem;
+        transition: all 0.3s;
+        overflow: hidden;
+        opacity: 0;
+        animation: fadeInUp 0.6s ease forwards;
+    }
+
+        .order-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .order-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .order-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .order-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .order-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .order-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(49, 54, 71, 0.15);
+            border-color: var(--sage-green);
+        }
+
+    .order-card-body {
+        padding: 1.5rem;
+    }
+
+    .order-id {
+        color: var(--dark-navy);
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .order-date {
+        color: var(--slate-blue);
+        font-size: 0.9rem;
+    }
+
+    .order-total {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--sage-green);
+        margin: 0;
+    }
+
+    .order-label {
+        color: var(--slate-blue);
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 0.3rem;
+    }
+
+    /* Status Badges */
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: inline-block;
+    }
+
+    .badge-pending {
+        background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        color: white;
+    }
+
+    .badge-processing {
+        background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        color: white;
+    }
+
+    .badge-shipped {
+        background: linear-gradient(135deg, var(--slate-blue), #6b7280);
+        color: white;
+    }
+
+    .badge-delivered {
+        background: linear-gradient(135deg, var(--sage-green), #b5c599);
+        color: white;
+    }
+
+    .badge-cancelled {
+        background: linear-gradient(135deg, #ef4444, #f87171);
+        color: white;
+    }
+
+    /* Buttons */
+    .btn-view-order {
+        background: linear-gradient(135deg, var(--dark-navy), var(--slate-blue));
+        border: none;
+        color: white;
+        padding: 0.6rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-view-order:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(49, 54, 71, 0.3);
+            color: white;
+        }
+
+    /* Empty State */
+    .empty-orders {
+        background: white;
+        border: 2px solid var(--cream);
+        border-radius: 20px;
+        padding: 4rem 2rem;
+        text-align: center;
+        animation: fadeInUp 0.8s ease;
+    }
+
+    .empty-icon {
+        font-size: 5rem;
+        color: var(--sage-green);
+        opacity: 0.4;
+        margin-bottom: 1.5rem;
+    }
+
+    .empty-title {
+        color: var(--dark-navy);
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .btn-start-shopping {
+        background: linear-gradient(135deg, var(--sage-green), #b5c599);
+        border: none;
+        color: white;
+        padding: 1rem 2.5rem;
+        border-radius: 12px;
+        font-weight: 700;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 1rem;
+    }
+
+        .btn-start-shopping:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(163, 176, 135, 0.5);
+            color: white;
+        }
+
+    /* Divider Line */
+    .order-divider {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--sage-green), transparent);
+        margin: 1rem 0;
+    }
+</style>
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="orders-header">
+        <div class="text-center">
+            <h1 class="orders-title">
+                <i class="bi bi-bag-check-fill me-2"></i>My Orders
+            </h1>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <!-- Empty State -->
+        <div class="empty-orders">
+            <i class="bi bi-inbox empty-icon"></i>
+            <h3 class="empty-title">No Orders Yet</h3>
+            <p class="text-muted mb-4">You haven't placed any orders. Start shopping to see your orders here!</p>
+            <a asp-controller="Product" asp-action="Index" class="btn-start-shopping">
+                <i class="bi bi-shop me-2"></i>Start Shopping
+            </a>
+        </div>
+    }
+    else
+    {
+        <!-- Orders List -->
+        <div class="row">
+            @foreach (var order in Model)
+            {
+                <div class="col-12">
+                    <div class="order-card">
+                        <div class="order-card-body">
+                            <div class="row align-items-center">
+                                <!-- Order ID & Date -->
+                                <div class="col-md-3">
+                                    <div class="order-id">
+                                        <i class="bi bi-receipt me-2"></i>Order #@order.OrderId
+                                    </div>
+                                    <div class="order-date">
+                                        <i class="bi bi-calendar-event me-1"></i>@order.OrderDate.ToString("MMM dd, yyyy")
+                                    </div>
+                                </div>
+
+                                <!-- Total Amount -->
+                                <div class="col-md-3">
+                                    <div class="order-label">Total Amount</div>
+                                    <div class="order-total">@order.TotalAmount.ToString("C")</div>
+                                </div>
+
+                                <!-- Status Badge -->
+                                <div class="col-md-3">
+                                    <div class="order-label">Order Status</div>
+                                    <div>
+                                        @if (order.Status == ECommerce.DAL.Enums.OrderStatus.Pending)
+                                        {
+                                            <span class="status-badge badge-pending">
+                                                <i class="bi bi-clock-fill me-1"></i>Pending
+                                            </span>
+                                        }
+                                        else if (order.Status == ECommerce.DAL.Enums.OrderStatus.Processing)
+                                        {
+                                            <span class="status-badge badge-processing">
+                                                <i class="bi bi-gear-fill me-1"></i>Processing
+                                            </span>
+                                        }
+                                        else if (order.Status == ECommerce.DAL.Enums.OrderStatus.Shipped)
+                                        {
+                                            <span class="status-badge badge-shipped">
+                                                <i class="bi bi-truck me-1"></i>Shipped
+                                            </span>
+                                        }
+                                        else if (order.Status == ECommerce.DAL.Enums.OrderStatus.Delivered)
+                                        {
+                                            <span class="status-badge badge-delivered">
+                                                <i class="bi bi-check-circle-fill me-1"></i>Delivered
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="status-badge badge-cancelled">
+                                                <i class="bi bi-x-circle-fill me-1"></i>Cancelled
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+
+                                <!-- View Details Button -->
+                                <div class="col-md-3 text-end">
+                                    <a asp-action="Details" asp-route-id="@order.OrderId" class="btn-view-order">
+                                        <i class="bi bi-eye me-2"></i>View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

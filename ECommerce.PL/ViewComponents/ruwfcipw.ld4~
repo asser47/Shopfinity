@@ -1,0 +1,29 @@
+﻿//using ECommerce.BLL.Interfaces;
+//using Microsoft.AspNetCore.Mvc;
+
+//namespace ECommerce.PL.ViewComponents
+//{
+//    public class CartBadgeViewComponent : ViewComponent
+//    {
+//        private readonly ICartService _cartService;
+
+//        public CartBadgeViewComponent(ICartService cartService)
+//        {
+//            _cartService = cartService;
+//        }
+
+//        public IViewComponentResult Invoke()
+//        {
+//            var userId = HttpContext.Session.GetString("UserId");
+
+//            if (string.IsNullOrEmpty(userId))
+//            {
+//                userId = Guid.NewGuid().ToString();
+//                HttpContext.Session.SetString("UserId", userId);
+//            }
+
+//            var count = _cartService.GetCartItemCount(userId);
+//            return Content(count.ToString());
+//        }
+//    }
+//}

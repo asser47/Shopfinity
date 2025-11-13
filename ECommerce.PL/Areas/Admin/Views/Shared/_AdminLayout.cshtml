@@ -1,0 +1,555 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Shopfinity Admin</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+
+    <style>
+        /* Shopfinity Color Palette */
+        :root {
+            --dark-navy: #313647;
+            --slate-blue: #435663;
+            --sage-green: #A3B087;
+            --cream: #FFF8D4;
+            --warning-orange: #f59e0b;
+            --error-red: #dc2626;
+            --sidebar-width: 280px;
+            --header-height: 70px;
+        }
+
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animations */
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @@keyframes slideInLeft {
+            from {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @@keyframes slideInDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Global Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8f9fc 0%, #e9ecef 100%);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Sidebar */
+        .admin-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--dark-navy) 0%, var(--slate-blue) 100%);
+            padding: 0;
+            z-index: 1000;
+            overflow-y: auto;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+            /* Custom Scrollbar */
+            .admin-sidebar::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .admin-sidebar::-webkit-scrollbar-track {
+                background: rgba(255, 255, 255, 0.05);
+            }
+
+            .admin-sidebar::-webkit-scrollbar-thumb {
+                background: var(--sage-green);
+                border-radius: 3px;
+            }
+
+            /* Brand Section */
+            .admin-sidebar .brand {
+                color: #fff;
+                font-size: 1.6rem;
+                font-weight: 800;
+                padding: 2rem 1.5rem;
+                border-bottom: 2px solid rgba(163, 176, 135, 0.3);
+                margin-bottom: 1.5rem;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                animation: slideInLeft 0.5s ease;
+            }
+
+        .brand-icon {
+            font-size: 2rem;
+            color: var(--sage-green);
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-name {
+            font-size: 1.6rem;
+            line-height: 1;
+        }
+
+        .brand-subtitle {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            font-weight: 500;
+            margin-top: 0.25rem;
+        }
+
+        /* Navigation */
+        .admin-sidebar .nav {
+            padding: 0 1rem;
+        }
+
+        .admin-sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.75);
+            padding: 0.9rem 1.25rem;
+            margin: 0.35rem 0;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            position: relative;
+        }
+
+            .admin-sidebar .nav-link:hover {
+                color: #fff;
+                background: rgba(163, 176, 135, 0.15);
+                transform: translateX(5px);
+            }
+
+            .admin-sidebar .nav-link.active {
+                color: #fff;
+                background: linear-gradient(135deg, var(--sage-green), #b5c599);
+                box-shadow: 0 4px 15px rgba(163, 176, 135, 0.3);
+            }
+
+                .admin-sidebar .nav-link.active::before {
+                    content: '';
+                    position: absolute;
+                    left: -1rem;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    width: 4px;
+                    height: 60%;
+                    background: var(--sage-green);
+                    border-radius: 0 4px 4px 0;
+                }
+
+            .admin-sidebar .nav-link i {
+                font-size: 1.2rem;
+                width: 24px;
+                text-align: center;
+            }
+
+        /* Sidebar Divider */
+        .sidebar-divider {
+            border-color: rgba(163, 176, 135, 0.2);
+            margin: 1.5rem 1rem;
+        }
+
+        /* Back to Site Link */
+        .nav-link.back-link {
+            margin-top: 1rem;
+            border-top: 2px solid rgba(163, 176, 135, 0.2);
+            padding-top: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Main Content Area */
+        .admin-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Header */
+        .admin-header {
+            background: white;
+            height: var(--header-height);
+            box-shadow: 0 2px 15px rgba(49, 54, 71, 0.08);
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            animation: slideInDown 0.5s ease;
+        }
+
+            .admin-header h4 {
+                margin: 0;
+                color: var(--dark-navy);
+                font-weight: 800;
+                font-size: 1.5rem;
+            }
+
+        /* User Dropdown */
+        .user-dropdown {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+            .user-dropdown .btn {
+                background: linear-gradient(135deg, var(--cream), #fffae6);
+                border: 2px solid var(--cream);
+                color: var(--dark-navy);
+                font-weight: 600;
+                padding: 0.6rem 1.25rem;
+                border-radius: 12px;
+                transition: all 0.3s;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+                .user-dropdown .btn:hover {
+                    background: var(--sage-green);
+                    border-color: var(--sage-green);
+                    color: white;
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(163, 176, 135, 0.3);
+                }
+
+                .user-dropdown .btn i {
+                    font-size: 1.3rem;
+                }
+
+        .dropdown-menu {
+            border: 2px solid var(--cream);
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .dropdown-item {
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            font-weight: 600;
+            color: var(--slate-blue);
+            transition: all 0.3s;
+        }
+
+            .dropdown-item:hover {
+                background: var(--sage-green);
+                color: white;
+            }
+
+            .dropdown-item i {
+                margin-right: 0.5rem;
+            }
+
+        /* Content Body */
+        .admin-body {
+            padding: 2rem;
+            flex: 1;
+            animation: fadeIn 0.6s ease;
+        }
+
+        /* Alert Styles */
+        .alert {
+            border-radius: 12px;
+            border: none;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            animation: slideInDown 0.5s ease;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #d1f4e0, #a8e6cf);
+            color: #155724;
+            border-left: 4px solid var(--sage-green);
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #fdd, #fcc);
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .alert i {
+            margin-right: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .btn-close {
+            filter: none;
+        }
+
+        /* Responsive Design */
+        @@media (max-width: 992px) {
+            :root {
+                --sidebar-width: 0;
+            }
+
+            .admin-sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+                .admin-sidebar.show {
+                    transform: translateX(0);
+                }
+
+            .admin-content {
+                margin-left: 0;
+            }
+
+            .admin-header {
+                padding: 0 1rem;
+            }
+
+            .admin-body {
+                padding: 1.5rem 1rem;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+                background: var(--sage-green);
+                border: none;
+                color: white;
+                padding: 0.5rem 1rem;
+                border-radius: 8px;
+                font-size: 1.2rem;
+            }
+        }
+
+        @@media (min-width: 993px) {
+            .mobile-menu-toggle {
+                display: none;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .admin-header h4 {
+                font-size: 1.2rem;
+            }
+
+            .user-dropdown .btn {
+                padding: 0.5rem 0.85rem;
+                font-size: 0.85rem;
+            }
+
+            .brand {
+                font-size: 1.3rem !important;
+                padding: 1.5rem 1rem !important;
+            }
+        }
+
+        /* Loading State */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(49, 54, 71, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--cream);
+            border-top-color: var(--sage-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @@keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="admin-sidebar" id="adminSidebar">
+        <div class="brand">
+            <i class="bi bi-shop brand-icon"></i>
+            <div class="brand-text">
+                <span class="brand-name">Shopfinity</span>
+                <span class="brand-subtitle">Admin Panel</span>
+            </div>
+        </div>
+        <nav class="nav flex-column">
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")"
+               asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                <i class="bi bi-speedometer2"></i>
+                <span>Dashboard</span>
+            </a>
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Product" ? "active" : "")"
+               asp-area="Admin" asp-controller="Product" asp-action="Index">
+                <i class="bi bi-box-seam-fill"></i>
+                <span>Products</span>
+            </a>
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Category" ? "active" : "")"
+               asp-area="Admin" asp-controller="Category" asp-action="Index">
+                <i class="bi bi-tags-fill"></i>
+                <span>Categories</span>
+            </a>
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Order" ? "active" : "")"
+               asp-area="Admin" asp-controller="Order" asp-action="Index">
+                <i class="bi bi-bag-check-fill"></i>
+                <span>Orders</span>
+            </a>
+            <hr class="sidebar-divider">
+            <a class="nav-link back-link" asp-area="" asp-controller="Home" asp-action="Index">
+                <i class="bi bi-arrow-left-circle"></i>
+                <span>Back to Store</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="admin-content">
+        <!-- Header -->
+        <div class="admin-header">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+                    <i class="bi bi-list"></i>
+                </button>
+                <h4>@ViewData["Title"]</h4>
+            </div>
+            <div class="user-dropdown">
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle"></i>
+                        <span>@User.Identity.Name</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li>
+                            <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">
+                                <button type="submit" class="dropdown-item">
+                                    <i class="bi bi-box-arrow-right"></i>Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="admin-body">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <strong>Success!</strong> @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <strong>Error!</strong> @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Mobile Sidebar Toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('adminSidebar');
+            sidebar.classList.toggle('show');
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('adminSidebar');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+
+            if (window.innerWidth <= 992 &&
+                !sidebar.contains(event.target) &&
+                !toggle.contains(event.target) &&
+                sidebar.classList.contains('show')) {
+                sidebar.classList.remove('show');
+            }
+        });
+
+        // Auto-dismiss alerts after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(function(alert) {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

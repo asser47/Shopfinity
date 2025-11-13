@@ -1,0 +1,425 @@
+﻿@model ECommerce.PL.ViewModels.OrderViewModel
+@{
+    ViewData["Title"] = "Order Details - Shopfinity";
+}
+
+<style>
+    
+    /* Header */
+    .order-header {
+        background: linear-gradient(135deg, var(--dark-navy), var(--slate-blue));
+        color: white;
+        padding: 2.5rem;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInDown 0.6s ease;
+    }
+
+        .order-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(163, 176, 135, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+    .order-header-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .order-title {
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    /* Status Badges */
+    .status-badge {
+        padding: 0.6rem 1.5rem;
+        border-radius: 25px;
+        font-weight: 700;
+        font-size: 1rem;
+        display: inline-block;
+    }
+
+    .badge-pending {
+        background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        color: white;
+    }
+
+    .badge-processing {
+        background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        color: white;
+    }
+
+    .badge-shipped {
+        background: linear-gradient(135deg, var(--slate-blue), #6b7280);
+        color: white;
+    }
+
+    .badge-delivered {
+        background: linear-gradient(135deg, var(--sage-green), #b5c599);
+        color: white;
+    }
+
+    .badge-cancelled {
+        background: linear-gradient(135deg, #ef4444, #f87171);
+        color: white;
+    }
+
+    /* Cards */
+    .info-card {
+        background: white;
+        border: 2px solid var(--cream);
+        border-radius: 20px;
+        box-shadow: 0 4px 15px rgba(49, 54, 71, 0.1);
+        margin-bottom: 2rem;
+        overflow: hidden;
+        animation: fadeInUp 0.8s ease;
+    }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, var(--cream), #fff);
+        padding: 1.5rem;
+        border-bottom: 2px solid var(--sage-green);
+    }
+
+        .card-header-custom h5 {
+            margin: 0;
+            color: var(--dark-navy);
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+    .card-body-custom {
+        padding: 2rem;
+    }
+
+    .info-row {
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--cream);
+    }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+    .info-label {
+        color: var(--slate-blue);
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+    }
+
+    .info-value {
+        color: var(--dark-navy);
+        font-weight: 500;
+    }
+
+    /* Order Items Table */
+    .order-table {
+        width: 100%;
+        margin-bottom: 0;
+    }
+
+        .order-table thead {
+            background: var(--cream);
+        }
+
+            .order-table thead th {
+                padding: 1rem;
+                color: var(--dark-navy);
+                font-weight: 700;
+                border: none;
+            }
+
+        .order-table tbody td {
+            padding: 1.2rem 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--cream);
+        }
+
+        .order-table tbody tr:hover {
+            background: var(--cream);
+        }
+
+    .product-img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 2px solid var(--cream);
+        margin-right: 0.8rem;
+    }
+
+    .product-name {
+        color: var(--dark-navy);
+        font-weight: 600;
+    }
+
+    /* Order Summary */
+    .order-summary {
+        background: var(--cream);
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-top: 1.5rem;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        color: var(--dark-navy);
+    }
+
+    .summary-total {
+        display: flex;
+        justify-content: space-between;
+        padding-top: 1rem;
+        margin-top: 1rem;
+        border-top: 3px solid var(--sage-green);
+    }
+
+        .summary-total h4 {
+            color: var(--sage-green);
+            font-weight: 800;
+            margin: 0;
+        }
+
+    /* Buttons */
+    .btn-cancel-order {
+        background: white;
+        border: 2px solid #ef4444;
+        color: #ef4444;
+        padding: 0.8rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        transition: all 0.3s;
+    }
+
+        .btn-cancel-order:hover {
+            background: #ef4444;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+        }
+
+    .btn-back-orders {
+        background: linear-gradient(135deg, var(--dark-navy), var(--slate-blue));
+        border: none;
+        color: white;
+        padding: 0.8rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        transition: all 0.3s;
+        text-decoration: none;
+    }
+
+        .btn-back-orders:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(49, 54, 71, 0.4);
+            color: white;
+        }
+</style>
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="order-header">
+        <div class="order-header-content">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <h1 class="order-title">
+                    <i class="bi bi-receipt-cutoff me-2"></i>Order #@Model.OrderId
+                </h1>
+                <div>
+                    @if (Model.Status == ECommerce.DAL.Enums.OrderStatus.Pending)
+                    {
+                        <span class="status-badge badge-pending">
+                            <i class="bi bi-clock-fill me-2"></i>Pending
+                        </span>
+                    }
+                    else if (Model.Status == ECommerce.DAL.Enums.OrderStatus.Processing)
+                    {
+                        <span class="status-badge badge-processing">
+                            <i class="bi bi-gear-fill me-2"></i>Processing
+                        </span>
+                    }
+                    else if (Model.Status == ECommerce.DAL.Enums.OrderStatus.Shipped)
+                    {
+                        <span class="status-badge badge-shipped">
+                            <i class="bi bi-truck me-2"></i>Shipped
+                        </span>
+                    }
+                    else if (Model.Status == ECommerce.DAL.Enums.OrderStatus.Delivered)
+                    {
+                        <span class="status-badge badge-delivered">
+                            <i class="bi bi-check-circle-fill me-2"></i>Delivered
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="status-badge badge-cancelled">
+                            <i class="bi bi-x-circle-fill me-2"></i>Cancelled
+                        </span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Order Information -->
+        <div class="col-lg-6">
+            <div class="info-card">
+                <div class="card-header-custom">
+                    <h5><i class="bi bi-info-circle-fill me-2"></i>Order Information</h5>
+                </div>
+                <div class="card-body-custom">
+                    <div class="info-row">
+                        <div class="info-label">Order Date</div>
+                        <div class="info-value">
+                            <i class="bi bi-calendar-check me-2"></i>@Model.OrderDate.ToString("MMMM dd, yyyy")
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Shipping Address</div>
+                        <div class="info-value">
+                            <i class="bi bi-geo-alt-fill me-2"></i>@Model.ShippingAddress
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Phone Number</div>
+                        <div class="info-value">
+                            <i class="bi bi-telephone-fill me-2"></i>@Model.PhoneNumber
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shipping Information -->
+        <div class="col-lg-6">
+            <div class="info-card">
+                <div class="card-header-custom">
+                    <h5><i class="bi bi-truck me-2"></i>Shipping Information</h5>
+                </div>
+                <div class="card-body-custom">
+                    @if (!string.IsNullOrEmpty(Model.TrackingNumber))
+                    {
+                        <div class="info-row">
+                            <div class="info-label">Tracking Number</div>
+                            <div class="info-value">
+                                <i class="bi bi-upc-scan me-2"></i>@Model.TrackingNumber
+                            </div>
+                        </div>
+                    }
+                    @if (Model.ShippedDate.HasValue)
+                    {
+                        <div class="info-row">
+                            <div class="info-label">Shipped Date</div>
+                            <div class="info-value">
+                                <i class="bi bi-calendar-check me-2"></i>@Model.ShippedDate.Value.ToString("MMM dd, yyyy")
+                            </div>
+                        </div>
+                    }
+                    @if (Model.DeliveredDate.HasValue)
+                    {
+                        <div class="info-row">
+                            <div class="info-label">Delivered Date</div>
+                            <div class="info-value">
+                                <i class="bi bi-calendar-check me-2"></i>@Model.DeliveredDate.Value.ToString("MMM dd, yyyy")
+                            </div>
+                        </div>
+                    }
+                    @if (!Model.ShippedDate.HasValue && !Model.DeliveredDate.HasValue && string.IsNullOrEmpty(Model.TrackingNumber))
+                    {
+                        <div class="text-center py-4">
+                            <i class="bi bi-box-seam" style="font-size: 3rem; color: var(--sage-green); opacity: 0.3;"></i>
+                            <p class="text-muted mt-2">Shipping information will be available once the order is processed.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Items -->
+    <div class="info-card">
+        <div class="card-header-custom">
+            <h5><i class="bi bi-bag-check-fill me-2"></i>Order Items</h5>
+        </div>
+        <div class="card-body-custom">
+            <table class="order-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th class="text-end">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    @if (!string.IsNullOrEmpty(item.ProductImage))
+                                    {
+                                        <img src="@item.ProductImage" alt="@item.ProductName" class="product-img" />
+                                    }
+                                    <span class="product-name">@item.ProductName</span>
+                                </div>
+                            </td>
+                            <td>×@item.Quantity</td>
+                            <td>@item.UnitPrice.ToString("C")</td>
+                            <td class="text-end" style="color: var(--sage-green); font-weight: 700;">
+                                @item.Total.ToString("C")
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <strong>@Model.Subtotal.ToString("C")</strong>
+                </div>
+                <div class="summary-row">
+                    <span>Tax:</span>
+                    <strong>@Model.Tax.ToString("C")</strong>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping:</span>
+                    <strong>@Model.ShippingCost.ToString("C")</strong>
+                </div>
+                <div class="summary-total">
+                    <h4>Total Amount:</h4>
+                    <h4>@Model.TotalAmount.ToString("C")</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="text-center">
+        @if (Model.Status == ECommerce.DAL.Enums.OrderStatus.Pending || Model.Status == ECommerce.DAL.Enums.OrderStatus.Processing)
+        {
+            <form asp-action="Cancel" asp-route-id="@Model.OrderId" method="post" class="d-inline me-2">
+                <button type="submit" class="btn-cancel-order" onclick="return confirm('Are you sure you want to cancel this order?')">
+                    <i class="bi bi-x-circle me-2"></i>Cancel Order
+                </button>
+            </form>
+        }
+        <a asp-action="MyOrders" class="btn-back-orders">
+            <i class="bi bi-arrow-left me-2"></i>Back to Orders
+        </a>
+    </div>
+</div>

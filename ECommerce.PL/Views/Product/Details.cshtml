@@ -1,0 +1,575 @@
+﻿@model ECommerce.DAL.Models.Product
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<style>
+    @@keyframes fadeInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @@keyframes fadeInRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @@keyframes zoomIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        box-shadow: 0 2px 8px rgba(49, 54, 71, 0.08);
+        border: 2px solid var(--cream);
+        animation: fadeInUp 0.6s ease;
+    }
+
+    .breadcrumb-item a {
+        color: var(--sage-green);
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+        .breadcrumb-item a:hover {
+            color: var(--dark-navy);
+        }
+
+    /* Product Image Section */
+    .product-image-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(49, 54, 71, 0.1);
+        border: 3px solid var(--cream);
+        animation: fadeInLeft 0.8s ease;
+    }
+
+    .product-main-image {
+        height: 500px;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+        .product-main-image:hover {
+            transform: scale(1.05);
+        }
+
+    .img-thumbnail {
+        cursor: pointer;
+        transition: all 0.3s;
+        border: 3px solid #e5e7eb;
+    }
+
+        .img-thumbnail:hover {
+            transform: scale(1.1);
+            border-color: var(--sage-green);
+            box-shadow: 0 4px 12px rgba(163, 176, 135, 0.3);
+        }
+
+    /* Product Details Section */
+    .product-details-section {
+        animation: fadeInRight 0.8s ease;
+    }
+
+    .product-title {
+        color: var(--dark-navy);
+        font-weight: 800;
+        animation: fadeInUp 1s ease 0.2s both;
+    }
+
+    .product-rating {
+        animation: fadeInUp 1s ease 0.4s both;
+    }
+
+    .stock-badge-success {
+        background: linear-gradient(135deg, var(--sage-green), #b5c599) !important;
+        color: white !important;
+        border: none;
+    }
+
+    .stock-badge-warning {
+        background: linear-gradient(135deg, #f59e0b, #fbbf24) !important;
+        color: white !important;
+        border: none;
+    }
+
+    .stock-badge-danger {
+        background: linear-gradient(135deg, #ef4444, #f87171) !important;
+        color: white !important;
+        border: none;
+    }
+
+    .stock-badge {
+        animation: zoomIn 0.6s ease 0.6s both;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    /* Section Headers */
+    .section-header {
+        color: var(--dark-navy);
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid var(--sage-green);
+        display: inline-block;
+    }
+
+    .product-price {
+        color: var(--sage-green);
+        animation: fadeInUp 1s ease 0.8s both;
+    }
+
+    .details-card {
+        background: white;
+        border: 2px solid var(--sage-green);
+        border-radius: 20px;
+        box-shadow: 0 4px 15px rgba(163, 176, 135, 0.15);
+        animation: fadeInUp 1s ease 1s both;
+        overflow: hidden;
+    }
+
+        .details-card .card-body {
+            padding: 2rem;
+        }
+
+    .details-table {
+        margin: 0;
+    }
+
+        .details-table tr {
+            border-bottom: 1px solid var(--cream);
+        }
+
+            .details-table tr:last-child {
+                border-bottom: none;
+            }
+
+        .details-table td {
+            padding: 1rem 0;
+        }
+
+        .details-table .label {
+            color: var(--slate-blue);
+            font-weight: 500;
+            width: 40%;
+        }
+
+        .details-table .value {
+            color: var(--dark-navy);
+            font-weight: 600;
+        }
+
+    /* Buttons */
+    .btn-add-cart {
+        background: linear-gradient(135deg, var(--sage-green), #b5c599);
+        border: none;
+        color: white;
+        padding: 0.8rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(163, 176, 135, 0.3);
+    }
+
+        .btn-add-cart:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(163, 176, 135, 0.5);
+            color: white;
+        }
+
+    .btn-back {
+        background: white;
+        border: 2px solid var(--sage-green);
+        color: var(--dark-navy);
+        padding: 0.8rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+        .btn-back:hover {
+            background: var(--sage-green);
+            color: white;
+        }
+
+    .btn-outline-secondary {
+        border: 2px solid var(--sage-green);
+        color: var(--sage-green);
+        transition: all 0.3s;
+    }
+
+        .btn-outline-secondary:hover {
+            background: var(--sage-green);
+            color: white;
+        }
+
+    /* Tabs */
+    .nav-tabs {
+        border-bottom: 3px solid var(--cream);
+    }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: var(--dark-navy);
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+            transition: all 0.3s;
+        }
+
+            .nav-tabs .nav-link:hover {
+                color: var(--sage-green);
+            }
+
+            .nav-tabs .nav-link.active {
+                background: var(--sage-green);
+                color: white;
+                border-radius: 12px 12px 0 0;
+            }
+
+    .tab-content {
+        background: white;
+        border: 2px solid var(--cream);
+        border-radius: 0 12px 12px 12px;
+        animation: fadeInUp 0.6s ease;
+    }
+
+    .review-card {
+        border: 2px solid var(--cream);
+        border-radius: 12px;
+        transition: all 0.3s;
+    }
+
+        .review-card:hover {
+            border-color: var(--sage-green);
+            transform: translateX(10px);
+            box-shadow: 0 4px 12px rgba(163, 176, 135, 0.2);
+        }
+
+    /* Additional Info Icons */
+    .info-icons {
+        background: var(--cream);
+        padding: 1rem;
+        border-radius: 12px;
+        animation: fadeInUp 1s ease 1.2s both;
+    }
+
+        .info-icons span {
+            color: var(--dark-navy);
+            font-weight: 600;
+        }
+</style>
+
+<div class="container mt-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+                <a asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-house-door-fill"></i> Home
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a asp-controller="Product" asp-action="Index">Products</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Product Image Section -->
+        <div class="col-md-6 mb-4">
+            <div class="product-image-card">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl"
+                         class="card-img-top product-main-image"
+                         alt="@Model.Name"
+                         onerror="this.src='/images/placeholder.jpg'">
+                }
+                else
+                {
+                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 500px;">
+                        <div class="text-center">
+                            <i class="bi bi-image text-muted" style="font-size: 100px; color: var(--sage-green) !important;"></i>
+                            <p class="text-muted mt-3">No Image Available</p>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Thumbnail Gallery -->
+            <div class="row mt-3 g-2">
+                @for (int i = 0; i < 4; i++)
+                {
+                    <div class="col-3">
+                        <img src="@Model.ImageUrl" class="img-thumbnail" alt="Thumbnail" style="height: 80px; object-fit: cover;">
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Product Details Section -->
+        <div class="col-md-6 product-details-section">
+            <!-- Title -->
+            <h1 class="display-5 product-title mb-3">@Model.Name</h1>
+
+            <!-- Rating -->
+            <div class="mb-3 product-rating">
+                <span class="text-warning">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-half"></i>
+                </span>
+                <span class="text-muted ms-2">(4.5 / 5) - 128 reviews</span>
+            </div>
+
+            <!-- Stock Badge -->
+            <div class="mb-3">
+                @if (Model.Stock > 10)
+                {
+                    <span class="badge stock-badge stock-badge-success fs-6 px-4 py-3">
+                        <i class="bi bi-check-circle-fill me-2"></i>In Stock (@Model.Stock available)
+                    </span>
+                }
+                else if (Model.Stock > 0)
+                {
+                    <span class="badge stock-badge stock-badge-warning fs-6 px-4 py-3">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Only @Model.Stock Left - Order Now!
+                    </span>
+                }
+                else
+                {
+                    <span class="badge stock-badge stock-badge-danger fs-6 px-4 py-3">
+                        <i class="bi bi-x-circle-fill me-2"></i>Currently Out of Stock
+                    </span>
+                }
+            </div>
+
+            <!-- Price -->
+            <div class="mb-4">
+                <h2 class="product-price fw-bold mb-1">@Model.Price.ToString("C")</h2>
+                <small class="text-muted">
+                    <del>@((Model.Price * 1.2m).ToString("C"))</del>
+                    <span class="badge bg-danger ms-2">Save 20%</span>
+                </small>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Description -->
+            <div class="mb-4">
+                <h5 class="fw-bold mb-3" style="color: var(--dark-navy);">
+                    <i class="bi bi-info-circle-fill"></i> Description
+                </h5>
+                <p class="text-muted lh-lg">@Model.Description</p>
+            </div>
+
+            <!-- Product Details Card -->
+            <div class="details-card mb-4">
+                <div class="card-body">
+                    <h5 class="section-header">
+                        <i class="bi bi-info-circle-fill me-2"></i>Product Information
+                    </h5>
+                    <table class="table table-borderless details-table">
+                        <tbody>
+                            <tr>
+                                <td class="label">
+                                    <i class="bi bi-tag-fill me-2"></i>Category
+                                </td>
+                                <td class="value">@Model.Category?.Name</td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <i class="bi bi-box-seam-fill me-2"></i>Availability
+                                </td>
+                                <td class="value">
+                                    @if (Model.Stock > 0)
+                                    {
+                                        <span style="color: var(--sage-green);">@Model.Stock units in stock</span>
+                                    }
+                                    else
+                                    {
+                                        <span style="color: #ef4444;">Out of stock</span>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <i class="bi bi-calendar-plus-fill me-2"></i>Listed On
+                                </td>
+                                <td class="value">@Model.CreatedDate.ToString("MMM dd, yyyy")</td>
+                            </tr>
+                            @if (Model.LastModifiedDate.HasValue)
+                            {
+                                <tr>
+                                    <td class="label">
+                                        <i class="bi bi-calendar-check-fill me-2"></i>Last Updated
+                                    </td>
+                                    <td class="value">@Model.LastModifiedDate.Value.ToString("MMM dd, yyyy")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Quantity & Add to Cart -->
+            @if (Model.Stock > 0)
+            {
+                <form asp-controller="Cart" asp-action="AddToCart" method="post" class="mb-4">
+                    <input type="hidden" name="productId" value="@Model.Id" />
+
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <label class="form-label mb-0 fw-bold">Quantity:</label>
+                        <div class="input-group" style="max-width: 150px;">
+                            <button class="btn btn-outline-secondary" type="button" onclick="decrementQty()">
+                                <i class="bi bi-dash"></i>
+                            </button>
+                            <input type="number" id="quantity" name="quantity"
+                                   class="form-control text-center" value="1" min="1" max="@Model.Stock">
+                            <button class="btn btn-outline-secondary" type="button" onclick="incrementQty(@Model.Stock)">
+                                <i class="bi bi-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-add-cart btn-lg w-100 mb-3">
+                        <i class="bi bi-cart-plus-fill"></i> Add to Cart
+                    </button>
+                </form>
+            }
+            else
+            {
+                <button class="btn btn-secondary btn-lg w-100 mb-3" disabled>
+                    <i class="bi bi-cart-x"></i> Out of Stock
+                </button>
+            }
+
+            <!-- Back Button -->
+            <a asp-controller="Product" asp-action="Index" class="btn btn-back btn-lg w-100">
+                <i class="bi bi-arrow-left"></i> Back to Products
+            </a>
+
+            <!-- Additional Info -->
+            <div class="info-icons mt-4">
+                <div class="d-flex justify-content-between">
+                    <span><i class="bi bi-truck"></i> Free Shipping</span>
+                    <span><i class="bi bi-shield-check"></i> 2 Year Warranty</span>
+                    <span><i class="bi bi-arrow-repeat"></i> 30 Day Returns</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#description">
+                        <i class="bi bi-file-text-fill"></i> Description
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#specifications">
+                        <i class="bi bi-gear-fill"></i> Specifications
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#reviews">
+                        <i class="bi bi-chat-dots-fill"></i> Reviews (128)
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content p-4">
+                <div class="tab-pane fade show active" id="description">
+                    <h5 style="color: var(--dark-navy);">About this product</h5>
+                    <p>@Model.Description</p>
+                    <ul>
+                        <li>Premium quality materials</li>
+                        <li>Advanced features and functionality</li>
+                        <li>Easy to use and maintain</li>
+                        <li>Backed by manufacturer warranty</li>
+                    </ul>
+                </div>
+
+                <div class="tab-pane fade" id="specifications">
+                    <h5 style="color: var(--dark-navy);">Technical Specifications</h5>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr><th>Product ID</th><td>@Model.Id</td></tr>
+                            <tr><th>Name</th><td>@Model.Name</td></tr>
+                            <tr><th>Category</th><td>@Model.Category?.Name</td></tr>
+                            <tr><th>Price</th><td>@Model.Price.ToString("C")</td></tr>
+                            <tr><th>Stock</th><td>@Model.Stock units</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tab-pane fade" id="reviews">
+                    <h5 style="color: var(--dark-navy);">Customer Reviews</h5>
+                    <div class="review-card card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <h6>John Doe</h6>
+                                <small class="text-muted">2 weeks ago</small>
+                            </div>
+                            <div class="text-warning mb-2">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                            </div>
+                            <p>Excellent product! Highly recommended.</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-add-cart">Write a Review</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function incrementQty(max) {
+        var qty = document.getElementById('quantity');
+        if (parseInt(qty.value) < max) qty.value = parseInt(qty.value) + 1;
+    }
+
+    function decrementQty() {
+        var qty = document.getElementById('quantity');
+        if (parseInt(qty.value) > 1) qty.value = parseInt(qty.value) - 1;
+    }
+</script>

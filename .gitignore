@@ -1,0 +1,13 @@
+ECHO is on.
+.vs/ 
+bin/ 
+obj/ 
+ECommerce.PL/appsettings.Development.json
+appsettings.Development.json
+*.user 
+*.suo 
+*.log 
+*.dbmdl 
+*.cache 
+/packages/ 
+/TestResults/ 

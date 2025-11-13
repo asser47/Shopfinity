@@ -1,0 +1,499 @@
+﻿@model ECommerce.DAL.Models.Product
+@{
+    ViewData["Title"] = "Edit Product - Shopfinity Admin";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+
+    @@keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(-15px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    /* Page Container */
+    .admin-edit-container {
+        padding: 2rem 0;
+        animation: fadeInUp 0.5s ease;
+    }
+
+    /* Page Header */
+    .page-header {
+        background: linear-gradient(135deg, var(--warning-orange), #fb923c);
+        color: white;
+        padding: 1.5rem 2rem;
+        border-radius: 16px 16px 0 0;
+        margin-bottom: 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+    .page-header-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .page-header-top {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .page-header-icon {
+        font-size: 1.8rem;
+    }
+
+    .page-header-title {
+        font-size: 1.6rem;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .product-name-badge {
+        background: rgba(255, 255, 255, 0.25);
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        display: inline-block;
+        margin-top: 0.5rem;
+    }
+
+    /* Card Styling */
+    .edit-card {
+        background: white;
+        border: 2px solid var(--cream);
+        border-radius: 0 0 20px 20px;
+        box-shadow: 0 4px 20px rgba(49, 54, 71, 0.1);
+        overflow: hidden;
+    }
+
+    .edit-card-body {
+        padding: 2.5rem;
+    }
+
+    /* Form Elements */
+    .form-label {
+        color: var(--dark-navy);
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .form-label i {
+            color: var(--sage-green);
+            font-size: 1rem;
+        }
+
+    .form-control,
+    .form-select {
+        border: 2px solid var(--cream);
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.3s;
+        border-radius: 10px;
+    }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--warning-orange);
+            box-shadow: 0 0 0 0.2rem rgba(245, 158, 11, 0.25);
+        }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    /* Section Dividers */
+    .form-section {
+        margin-bottom: 2rem;
+        animation: slideInRight 0.5s ease;
+    }
+
+        .form-section:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .form-section:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .form-section:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+    .section-title {
+        color: var(--dark-navy);
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 1.25rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--cream);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .section-title i {
+            color: var(--warning-orange);
+            font-size: 1.2rem;
+        }
+
+    /* Info Box */
+    .info-box {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        border: 2px solid var(--warning-orange);
+        border-radius: 12px;
+        padding: 1.25rem;
+        margin-bottom: 2rem;
+    }
+
+    .info-box-title {
+        color: var(--dark-navy);
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .info-box-title i {
+            color: var(--warning-orange);
+            font-size: 1.1rem;
+        }
+
+    .info-box-text {
+        color: #78350f;
+        font-size: 0.85rem;
+        margin: 0;
+    }
+
+    /* Help Text */
+    .form-help {
+        font-size: 0.85rem;
+        color: var(--slate-blue);
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+        .form-help i {
+            font-size: 0.9rem;
+        }
+
+    /* Required Indicator */
+    .required-indicator {
+        color: #dc3545;
+        margin-left: 0.25rem;
+    }
+
+    /* Buttons */
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2.5rem;
+        padding-top: 2rem;
+        border-top: 2px solid var(--cream);
+    }
+
+    .btn-update {
+        background: linear-gradient(135deg, var(--warning-orange), #fb923c);
+        border: none;
+        color: white;
+        padding: 0.9rem 2.5rem;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1rem;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+    }
+
+        .btn-update:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.5);
+            color: white;
+        }
+
+        .btn-update i {
+            margin-right: 0.5rem;
+        }
+
+    .btn-cancel {
+        background: white;
+        border: 2px solid var(--slate-blue);
+        color: var(--slate-blue);
+        padding: 0.9rem 2.5rem;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1rem;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-cancel:hover {
+            background: var(--slate-blue);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(67, 86, 99, 0.3);
+        }
+
+        .btn-cancel i {
+            margin-right: 0.5rem;
+        }
+
+    /* Validation Messages */
+    .text-danger {
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: block;
+        animation: slideInRight 0.3s ease;
+    }
+
+    /* Change Indicator */
+    .change-indicator {
+        background: linear-gradient(135deg, var(--cream), #fffae6);
+        border-left: 4px solid var(--warning-orange);
+        padding: 1rem 1.25rem;
+        border-radius: 0 10px 10px 0;
+        margin-bottom: 2rem;
+    }
+
+    .change-indicator-text {
+        color: var(--slate-blue);
+        font-size: 0.9rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .change-indicator-text i {
+            color: var(--warning-orange);
+            font-size: 1.1rem;
+        }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .edit-card-body {
+            padding: 2rem 1.5rem;
+        }
+
+        .page-header {
+            padding: 1.25rem 1.5rem;
+        }
+
+        .page-header-title {
+            font-size: 1.4rem;
+        }
+
+        .product-name-badge {
+            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn-update,
+        .btn-cancel {
+            width: 100%;
+            text-align: center;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .edit-card-body {
+            padding: 1.5rem 1.25rem;
+        }
+
+        .page-header {
+            padding: 1rem 1.25rem;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .page-header-title {
+            font-size: 1.2rem;
+        }
+
+        .page-header-icon {
+            font-size: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1rem;
+        }
+
+        .product-name-badge {
+            font-size: 0.85rem;
+        }
+    }
+</style>
+
+<div class="admin-edit-container">
+    <div class="row">
+        <div class="col-lg-9 col-xl-8 mx-auto">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="page-header-content">
+                    <div class="page-header-top">
+                        <i class="bi bi-pencil-square page-header-icon"></i>
+                        <h4 class="page-header-title">Edit Product</h4>
+                    </div>
+                    <div class="product-name-badge">
+                        <i class="bi bi-tag-fill me-2"></i>@Model.Name
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Card -->
+            <div class="edit-card">
+                <div class="edit-card-body">
+                    <!-- Info Box -->
+                    <div class="info-box">
+                        <div class="info-box-title">
+                            <i class="bi bi-info-circle-fill"></i>
+                            <span>Editing Product</span>
+                        </div>
+                        <p class="info-box-text">
+                            Update the product information below. Changes will be saved to your Shopfinity store when you click "Update Product".
+                        </p>
+                    </div>
+
+                    <!-- Change Indicator -->
+                    <div class="change-indicator">
+                        <p class="change-indicator-text">
+                            <i class="bi bi-clock-history"></i>
+                            <span>Created on @Model.CreatedDate.ToString("MMMM dd, yyyy")</span>
+                        </p>
+                    </div>
+
+                    <form asp-action="Edit" method="post">
+                        <!-- Hidden fields -->
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="CreatedDate" />
+
+                        <!-- Basic Information -->
+                        <div class="form-section">
+                            <h5 class="section-title">
+                                <i class="bi bi-tag-fill"></i>Basic Information
+                            </h5>
+
+                            <div class="mb-3">
+                                <label asp-for="Name" class="form-label">
+                                    <i class="bi bi-pencil-fill"></i>Product Name<span class="required-indicator">*</span>
+                                </label>
+                                <input asp-for="Name" class="form-control" placeholder="Enter product name" required />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Description" class="form-label">
+                                    <i class="bi bi-card-text"></i>Description<span class="required-indicator">*</span>
+                                </label>
+                                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Enter product description" required></textarea>
+                                <small class="form-help">
+                                    <i class="bi bi-lightbulb"></i>Provide a detailed description to help customers understand the product
+                                </small>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="CategoryId" class="form-label">
+                                    <i class="bi bi-folder-fill"></i>Category<span class="required-indicator">*</span>
+                                </label>
+                                <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories" required>
+                                    <option value="">-- Select Category --</option>
+                                </select>
+                                <span asp-validation-for="CategoryId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Pricing & Inventory -->
+                        <div class="form-section">
+                            <h5 class="section-title">
+                                <i class="bi bi-cash-stack"></i>Pricing & Inventory
+                            </h5>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Price" class="form-label">
+                                        <i class="bi bi-currency-dollar"></i>Price<span class="required-indicator">*</span>
+                                    </label>
+                                    <input asp-for="Price" class="form-control" type="number" step="0.01" placeholder="0.00" required />
+                                    <span asp-validation-for="Price" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Stock" class="form-label">
+                                        <i class="bi bi-box-seam"></i>Stock Quantity<span class="required-indicator">*</span>
+                                    </label>
+                                    <input asp-for="Stock" class="form-control" type="number" placeholder="0" required />
+                                    <span asp-validation-for="Stock" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product Image -->
+                        <div class="form-section">
+                            <h5 class="section-title">
+                                <i class="bi bi-image-fill"></i>Product Image
+                            </h5>
+
+                            <div class="mb-3">
+                                <label asp-for="ImageUrl" class="form-label">
+                                    <i class="bi bi-link-45deg"></i>Image URL
+                                </label>
+                                <input asp-for="ImageUrl" class="form-control" placeholder="https://example.com/image.jpg" />
+                                <small class="form-help">
+                                    <i class="bi bi-lightbulb"></i>Enter a direct link to the product image
+                                </small>
+                                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn-update">
+                                <i class="bi bi-check-circle-fill"></i>Update Product
+                            </button>
+                            <a asp-action="Index" class="btn-cancel">
+                                <i class="bi bi-x-circle"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

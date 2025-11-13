@@ -1,0 +1,295 @@
+﻿@{
+    ViewData["Title"] = "Access Denied - Shopfinity";
+}
+
+<style>
+
+    @@keyframes shakeIcon {
+        0%, 100% {
+            transform: rotate(0deg);
+        }
+
+        25% {
+            transform: rotate(-10deg);
+        }
+
+        75% {
+            transform: rotate(10deg);
+        }
+    }
+
+    @@keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+    }
+
+    /* Access Denied Container */
+    .access-denied-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem 1rem;
+    }
+
+    /* Access Denied Card */
+    .access-denied-card {
+        background: white;
+        border: 2px solid var(--error-red);
+        border-radius: 24px;
+        box-shadow: 0 10px 40px rgba(220, 53, 69, 0.2);
+        overflow: hidden;
+        animation: fadeInUp 0.6s ease;
+        max-width: 600px;
+        width: 100%;
+    }
+
+    /* Card Body */
+    .access-denied-body {
+        padding: 4rem 3rem;
+        text-align: center;
+    }
+
+    /* Error Icon */
+    .error-icon {
+        font-size: 6rem;
+        color: var(--error-red);
+        margin-bottom: 1.5rem;
+        display: inline-block;
+        animation: shakeIcon 0.6s ease, pulse 2s ease-in-out infinite 1s;
+    }
+
+    /* Title */
+    .error-title {
+        color: var(--error-red);
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+    }
+
+    /* Lead Text */
+    .error-lead {
+        color: var(--slate-blue);
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Description Text */
+    .error-description {
+        color: var(--slate-blue);
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Divider */
+    .error-divider {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--error-red), transparent);
+        margin: 2rem 0;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2.5rem;
+    }
+
+    .btn-home {
+        background: linear-gradient(135deg, var(--sage-green), #b5c599);
+        border: none;
+        color: white;
+        padding: 1rem 2.5rem;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.05rem;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(163, 176, 135, 0.3);
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-home:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(163, 176, 135, 0.5);
+            color: white;
+        }
+
+        .btn-home i {
+            margin-right: 0.5rem;
+        }
+
+    .btn-logout {
+        background: white;
+        border: 2px solid var(--slate-blue);
+        color: var(--slate-blue);
+        padding: 1rem 2.5rem;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.05rem;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-logout:hover {
+            background: var(--slate-blue);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(67, 86, 99, 0.3);
+        }
+
+        .btn-logout i {
+            margin-right: 0.5rem;
+        }
+
+    /* Info Box */
+    .info-box {
+        background: linear-gradient(135deg, var(--cream), #fffae6);
+        border: 2px solid var(--cream);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+        text-align: left;
+    }
+
+    .info-box-title {
+        color: var(--dark-navy);
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .info-box-title i {
+            color: var(--sage-green);
+            font-size: 1.2rem;
+        }
+
+    .info-box-text {
+        color: var(--slate-blue);
+        font-size: 0.9rem;
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .access-denied-container {
+            padding: 2rem 1rem;
+        }
+
+        .access-denied-body {
+            padding: 3rem 2rem;
+        }
+
+        .error-icon {
+            font-size: 4.5rem;
+        }
+
+        .error-title {
+            font-size: 1.8rem;
+        }
+
+        .error-lead {
+            font-size: 1.1rem;
+        }
+
+        .error-description {
+            font-size: 0.95rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .btn-home,
+        .btn-logout {
+            width: 100%;
+            padding: 0.9rem 2rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .access-denied-container {
+            padding: 1.5rem 0.75rem;
+        }
+
+        .access-denied-card {
+            border-radius: 20px;
+        }
+
+        .access-denied-body {
+            padding: 2.5rem 1.5rem;
+        }
+
+        .error-icon {
+            font-size: 4rem;
+        }
+
+        .error-title {
+            font-size: 1.6rem;
+        }
+
+        .error-lead {
+            font-size: 1rem;
+        }
+
+        .info-box {
+            padding: 1.25rem;
+        }
+    }
+</style>
+
+<div class="access-denied-container">
+    <div class="access-denied-card">
+        <div class="access-denied-body">
+            <!-- Error Icon -->
+            <i class="bi bi-shield-exclamation error-icon"></i>
+
+            <!-- Title -->
+            <h2 class="error-title">Access Denied</h2>
+
+            <!-- Lead Text -->
+            <p class="error-lead">You don't have permission to access this page.</p>
+
+            <!-- Divider -->
+            <div class="error-divider"></div>
+
+            <!-- Description -->
+            <p class="error-description">
+                This page requires special permissions that your account doesn't currently have.
+                Please contact an administrator if you believe this is an error.
+            </p>
+
+            <!-- Info Box -->
+            <div class="info-box">
+                <div class="info-box-title">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <span>What can I do?</span>
+                </div>
+                <p class="info-box-text">
+                    Return to the homepage and continue browsing, or logout and sign in with an account that has the required permissions.
+                </p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a asp-controller="Home" asp-action="Index" class="btn-home">
+                    <i class="bi bi-house-fill"></i>Go to Home
+                </a>

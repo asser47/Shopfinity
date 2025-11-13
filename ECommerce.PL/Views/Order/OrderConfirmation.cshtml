@@ -1,0 +1,374 @@
+﻿@model ECommerce.PL.ViewModels.OrderViewModel
+@{
+    ViewData["Title"] = "Order Confirmation";
+}
+
+<style>
+
+    @@keyframes checkmarkPulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
+    }
+
+    /* Success Header */
+    .confirmation-header {
+        background: linear-gradient(135deg, var(--sage-green), #b5c599);
+        color: white;
+        padding: 3rem 2rem;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInUp 0.6s ease;
+    }
+
+        .confirmation-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+    .success-icon {
+        font-size: 5rem;
+        animation: scaleIn 0.5s ease, checkmarkPulse 2s ease-in-out infinite 1s;
+        display: inline-block;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .confirmation-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .confirmation-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.95;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Order Details Card */
+    .order-details-card {
+        background: white;
+        border: 2px solid var(--cream);
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(49, 54, 71, 0.1);
+        overflow: hidden;
+        animation: fadeInUp 0.7s ease 0.2s backwards;
+    }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, var(--dark-navy), var(--slate-blue));
+        color: white;
+        padding: 1.5rem;
+        border: none;
+    }
+
+    .order-number {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .order-date-text {
+        opacity: 0.9;
+        font-size: 0.95rem;
+        margin-top: 0.3rem;
+    }
+
+    .card-body-custom {
+        padding: 2rem;
+    }
+
+    /* Info Sections */
+    .info-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .info-title {
+        color: var(--dark-navy);
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .info-content {
+        color: var(--slate-blue);
+        line-height: 1.6;
+    }
+
+        .info-content strong {
+            color: var(--dark-navy);
+        }
+
+    /* Status & Total */
+    .status-badge-confirmation {
+        background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        color: white;
+        padding: 0.5rem 1.2rem;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        display: inline-block;
+    }
+
+    .total-amount {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--sage-green);
+        margin: 0;
+    }
+
+    .total-label {
+        color: var(--slate-blue);
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 0.3rem;
+    }
+
+    /* Order Items Table */
+    .order-items-divider {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--sage-green), transparent);
+        margin: 2rem 0 1.5rem;
+    }
+
+    .items-title {
+        color: var(--dark-navy);
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .order-items-table {
+        margin-bottom: 0;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+        .order-items-table thead {
+            background: linear-gradient(135deg, var(--cream), #fffae6);
+        }
+
+            .order-items-table thead th {
+                color: var(--dark-navy);
+                font-weight: 700;
+                border: none;
+                padding: 1rem;
+                font-size: 0.95rem;
+            }
+
+        .order-items-table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            color: var(--slate-blue);
+            border-color: var(--cream);
+        }
+
+        .order-items-table tbody tr:hover {
+            background-color: rgba(163, 176, 135, 0.05);
+        }
+
+    .product-name {
+        color: var(--dark-navy);
+        font-weight: 600;
+    }
+
+    .item-total {
+        color: var(--sage-green);
+        font-weight: 700;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        margin-top: 2.5rem;
+        padding-top: 2rem;
+        border-top: 2px solid var(--cream);
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--dark-navy), var(--slate-blue));
+        border: none;
+        color: white;
+        padding: 0.8rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(49, 54, 71, 0.3);
+            color: white;
+        }
+
+    .btn-secondary-custom {
+        background: white;
+        border: 2px solid var(--sage-green);
+        color: var(--sage-green);
+        padding: 0.8rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-secondary-custom:hover {
+            background: var(--sage-green);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(163, 176, 135, 0.3);
+        }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .confirmation-header {
+            padding: 2rem 1rem;
+        }
+
+        .success-icon {
+            font-size: 3.5rem;
+        }
+
+        .confirmation-title {
+            font-size: 1.6rem;
+        }
+
+        .card-body-custom {
+            padding: 1.5rem;
+        }
+
+        .total-amount {
+            font-size: 1.5rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn-primary-custom,
+        .btn-secondary-custom {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="container my-5">
+    <!-- Success Header -->
+    <div class="confirmation-header">
+        <i class="bi bi-check-circle-fill success-icon"></i>
+        <h2 class="confirmation-title">Order Placed Successfully!</h2>
+        <p class="confirmation-subtitle">Thank you for shopping with Shopfinity. Your order is being processed.</p>
+    </div>
+
+    <!-- Order Details Card -->
+    <div class="order-details-card">
+        <div class="card-header-custom">
+            <h5 class="order-number">
+                <i class="bi bi-receipt me-2"></i>Order #@Model.OrderId
+            </h5>
+            <div class="order-date-text">
+                <i class="bi bi-calendar-event me-1"></i>@Model.OrderDate.ToString("MMMM dd, yyyy")
+            </div>
+        </div>
+
+        <div class="card-body-custom">
+            <div class="row">
+                <!-- Shipping Information -->
+                <div class="col-md-6 info-section">
+                    <h6 class="info-title">
+                        <i class="bi bi-geo-alt-fill"></i>Shipping Address
+                    </h6>
+                    <div class="info-content">
+                        <p class="mb-2">@Model.ShippingAddress</p>
+                        <p class="mb-0"><strong>Phone:</strong> @Model.PhoneNumber</p>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="col-md-6 info-section text-md-end">
+                    <div class="mb-3">
+                        <div class="total-label">Order Status</div>
+                        <span class="status-badge-confirmation">
+                            <i class="bi bi-clock-fill me-1"></i>@Model.StatusDisplay
+                        </span>
+                    </div>
+                    <div>
+                        <div class="total-label">Total Amount</div>
+                        <div class="total-amount">@Model.TotalAmount.ToString("C")</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="order-items-divider"></div>
+
+            <!-- Order Items -->
+            <h6 class="items-title">
+                <i class="bi bi-box-seam"></i>Order Items
+            </h6>
+            <div class="table-responsive">
+                <table class="table order-items-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td class="product-name">@item.ProductName</td>
+                                <td>@item.Quantity</td>
+                                <td>@item.UnitPrice.ToString("C")</td>
+                                <td class="item-total">@item.Total.ToString("C")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a asp-action="MyOrders" class="btn-primary-custom">
+                    <i class="bi bi-bag-check me-2"></i>View All Orders
+                </a>
+                <a asp-controller="Product" asp-action="Index" class="btn-secondary-custom">
+                    <i class="bi bi-shop me-2"></i>Continue Shopping
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

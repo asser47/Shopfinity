@@ -1,0 +1,796 @@
+﻿@model ECommerce.DAL.Models.Order
+@{
+    ViewData["Title"] = "Order Details - Shopfinity Admin";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    
+    @@keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(-15px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    /* Page Container */
+    .order-details-container {
+        padding: 2rem 0;
+        animation: fadeInUp 0.5s ease;
+    }
+
+    /* Page Header */
+    .page-header {
+        background: linear-gradient(135deg, var(--dark-navy), var(--slate-blue));
+        color: white;
+        padding: 1.5rem 2rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInDown 0.6s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(163, 176, 135, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+    .page-header-content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .page-header-icon {
+        font-size: 2rem;
+    }
+
+    .page-header-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .btn-back {
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 0.65rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: white;
+            transform: translateX(-3px);
+        }
+
+    /* Card Styling */
+    .info-card {
+        background: white;
+        border: 2px solid var(--cream);
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(49, 54, 71, 0.1);
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        animation: slideInRight 0.6s ease;
+    }
+
+    .info-card-header {
+        background: linear-gradient(135deg, var(--cream), #fffae6);
+        border-bottom: 2px solid var(--cream);
+        padding: 1.25rem 1.5rem;
+    }
+
+        .info-card-header h5 {
+            color: var(--dark-navy);
+            font-weight: 800;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-card-header i {
+            color: var(--sage-green);
+            font-size: 1.3rem;
+        }
+
+    .info-card-body {
+        padding: 1.75rem;
+    }
+
+    /* Order Info Grid */
+    .order-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+    }
+
+    .info-label {
+        color: var(--slate-blue);
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+        .info-label i {
+            color: var(--sage-green);
+            font-size: 0.95rem;
+        }
+
+    .info-value {
+        color: var(--dark-navy);
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    /* Status Badges */
+    .status-badge-pending {
+        background: linear-gradient(135deg, var(--warning-orange), #fb923c);
+        color: white;
+        padding: 0.4rem 0.9rem;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: inline-block;
+    }
+
+    .status-badge-processing {
+        background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        color: white;
+        padding: 0.4rem 0.9rem;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: inline-block;
+    }
+
+    .status-badge-shipped {
+        background: linear-gradient(135deg, var(--slate-blue), #6b7280);
+        color: white;
+        padding: 0.4rem 0.9rem;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: inline-block;
+    }
+
+    .status-badge-delivered {
+        background: linear-gradient(135deg, var(--sage-green), #b5c599);
+        color: white;
+        padding: 0.4rem 0.9rem;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: inline-block;
+    }
+
+    .status-badge-cancelled {
+        background: linear-gradient(135deg, var(--error-red), #c82333);
+        color: white;
+        padding: 0.4rem 0.9rem;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: inline-block;
+    }
+
+    /* Address Section */
+    .address-section {
+        background: linear-gradient(135deg, var(--cream), #fffae6);
+        border: 2px solid var(--cream);
+        border-radius: 12px;
+        padding: 1.25rem;
+        margin-top: 1.5rem;
+    }
+
+    .address-title {
+        color: var(--dark-navy);
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .address-title i {
+            color: var(--sage-green);
+        }
+
+    .address-content {
+        color: var(--slate-blue);
+        line-height: 1.6;
+    }
+
+    /* Order Items Table */
+    .order-items-table {
+        margin: 0;
+    }
+
+        .order-items-table thead {
+            background: linear-gradient(135deg, var(--cream), #fffae6);
+        }
+
+            .order-items-table thead th {
+                color: var(--dark-navy);
+                font-weight: 700;
+                font-size: 0.9rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                padding: 1rem;
+                border: none;
+            }
+
+        .order-items-table tbody tr {
+            border-bottom: 1px solid var(--cream);
+        }
+
+        .order-items-table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            color: var(--slate-blue);
+        }
+
+    .product-name-cell {
+        color: var(--dark-navy);
+        font-weight: 600;
+    }
+
+    .order-items-table tfoot tr {
+        border-top: 2px solid var(--cream);
+    }
+
+    .order-items-table tfoot td {
+        padding: 0.75rem 1rem;
+        font-weight: 600;
+    }
+
+    .total-row {
+        background: linear-gradient(135deg, var(--cream), #fffae6);
+    }
+
+    .total-amount {
+        color: var(--sage-green) !important;
+        font-size: 1.5rem;
+        font-weight: 800;
+    }
+
+    /* Actions Card */
+    .actions-card {
+        background: white;
+        border: 2px solid var(--cream);
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(49, 54, 71, 0.1);
+        overflow: hidden;
+        position: sticky;
+        top: 2rem;
+        animation: fadeInUp 0.7s ease;
+    }
+
+    /* Status Update Form */
+    .form-label {
+        color: var(--dark-navy);
+        font-weight: 700;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-select {
+        border: 2px solid var(--cream);
+        padding: 0.65rem 1rem;
+        border-radius: 10px;
+        transition: all 0.3s;
+    }
+
+        .form-select:focus {
+            border-color: var(--sage-green);
+            box-shadow: 0 0 0 0.2rem rgba(163, 176, 135, 0.25);
+        }
+
+    .btn-update-status {
+        background: linear-gradient(135deg, var(--sage-green), #b5c599);
+        border: none;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 700;
+        transition: all 0.3s;
+        box-shadow: 0 3px 10px rgba(163, 176, 135, 0.3);
+        width: 100%;
+    }
+
+        .btn-update-status:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(163, 176, 135, 0.5);
+            color: white;
+        }
+
+    .btn-print {
+        background: white;
+        border: 2px solid var(--slate-blue);
+        color: var(--slate-blue);
+        padding: 0.65rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 700;
+        transition: all 0.3s;
+        width: 100%;
+    }
+
+        .btn-print:hover {
+            background: var(--slate-blue);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(67, 86, 99, 0.3);
+        }
+
+    /* Info Alert */
+    .info-alert {
+        background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+        border: 2px solid #0ea5e9;
+        border-radius: 10px;
+        padding: 1rem;
+        margin-top: 1.5rem;
+    }
+
+        .info-alert small {
+            color: #075985;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .info-alert i {
+            color: #0ea5e9;
+            font-size: 1.1rem;
+        }
+
+    /* Timeline */
+    .timeline-card {
+        background: white;
+        border: 2px solid var(--cream);
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(49, 54, 71, 0.1);
+        overflow: hidden;
+        margin-top: 1.5rem;
+        animation: fadeInUp 0.8s ease;
+    }
+
+    .timeline {
+        position: relative;
+        padding: 0;
+    }
+
+    .timeline-item {
+        position: relative;
+        padding: 1rem 0 1rem 3rem;
+        display: flex;
+        gap: 1rem;
+        align-items: start;
+    }
+
+        .timeline-item i {
+            position: absolute;
+            left: 0;
+            top: 1rem;
+            font-size: 1.8rem;
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .timeline-item:not(:last-child)::before {
+            content: '';
+            position: absolute;
+            left: 1.2rem;
+            top: 3rem;
+            height: calc(100% - 1rem);
+            width: 2px;
+            background: var(--cream);
+        }
+
+    .timeline-content {
+        flex: 1;
+    }
+
+        .timeline-content strong {
+            color: var(--dark-navy);
+            font-size: 0.95rem;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-content .text-muted {
+            color: var(--slate-blue) !important;
+            font-size: 0.85rem;
+        }
+
+    /* Divider */
+    .section-divider {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--cream), transparent);
+        margin: 1.5rem 0;
+    }
+
+    /* Responsive */
+    @@media (max-width: 992px) {
+        .actions-card {
+            position: relative;
+            top: 0;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .btn-back {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .order-info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .order-items-table {
+            font-size: 0.85rem;
+        }
+
+            .order-items-table thead th,
+            .order-items-table tbody td,
+            .order-items-table tfoot td {
+                padding: 0.75rem 0.5rem;
+            }
+    }
+
+    @@media (max-width: 576px) {
+        .page-header-title {
+            font-size: 1.4rem;
+        }
+
+        .info-card-body {
+            padding: 1.25rem;
+        }
+    }
+
+    /* Print Styles */
+    @@media print {
+        .page-header,
+        .actions-card,
+        .btn-back {
+            display: none !important;
+        }
+
+        .info-card {
+            page-break-inside: avoid;
+        }
+    }
+</style>
+
+<div class="order-details-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <i class="bi bi-receipt-cutoff page-header-icon"></i>
+            <h2 class="page-header-title">Order #@Model.Id</h2>
+        </div>
+        <a asp-action="Index" class="btn-back">
+            <i class="bi bi-arrow-left"></i>Back to Orders
+        </a>
+    </div>
+
+    <div class="row">
+        <!-- Order Information -->
+        <div class="col-lg-8">
+            <!-- Order Info Card -->
+            <div class="info-card">
+                <div class="info-card-header">
+                    <h5>
+                        <i class="bi bi-info-circle-fill"></i>
+                        Order Information
+                    </h5>
+                </div>
+                <div class="info-card-body">
+                    <div class="order-info-grid">
+                        <div class="info-item">
+                            <span class="info-label">
+                                <i class="bi bi-calendar-check"></i>Order Date
+                            </span>
+                            <span class="info-value">@Model.OrderDate.ToString("MMMM dd, yyyy HH:mm")</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <i class="bi bi-person-fill"></i>Customer
+                            </span>
+                            <span class="info-value">@Model.User?.Email</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <i class="bi bi-telephone-fill"></i>Phone Number
+                            </span>
+                            <span class="info-value">@Model.PhoneNumber</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <i class="bi bi-flag-fill"></i>Status
+                            </span>
+                            <span class="info-value">
+                                @if (Model.Status == ECommerce.DAL.Enums.OrderStatus.Pending)
+                                {
+                                    <span class="status-badge-pending">
+                                        <i class="bi bi-clock-fill me-1"></i>Pending
+                                    </span>
+                                }
+                                else if (Model.Status == ECommerce.DAL.Enums.OrderStatus.Processing)
+                                {
+                                    <span class="status-badge-processing">
+                                        <i class="bi bi-gear-fill me-1"></i>Processing
+                                    </span>
+                                }
+                                else if (Model.Status == ECommerce.DAL.Enums.OrderStatus.Shipped)
+                                {
+                                    <span class="status-badge-shipped">
+                                        <i class="bi bi-truck me-1"></i>Shipped
+                                    </span>
+                                }
+                                else if (Model.Status == ECommerce.DAL.Enums.OrderStatus.Delivered)
+                                {
+                                    <span class="status-badge-delivered">
+                                        <i class="bi bi-check-circle-fill me-1"></i>Delivered
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="status-badge-cancelled">
+                                        <i class="bi bi-x-circle-fill me-1"></i>Cancelled
+                                    </span>
+                                }
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <i class="bi bi-credit-card"></i>Payment Method
+                            </span>
+                            <span class="info-value">@(Model.PaymentMethod ?? "N/A")</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <i class="bi bi-hash"></i>Transaction ID
+                            </span>
+                            <span class="info-value">@(Model.TransactionId ?? "N/A")</span>
+                        </div>
+                    </div>
+
+                    <div class="section-divider"></div>
+
+                    <!-- Shipping Address -->
+                    <div class="address-section">
+                        <div class="address-title">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            Shipping Address
+                        </div>
+                        <div class="address-content">
+                            @Model.ShippingAddress
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Notes))
+                    {
+                        <div class="address-section" style="margin-top: 1rem;">
+                            <div class="address-title">
+                                <i class="bi bi-sticky-fill"></i>
+                                Order Notes
+                            </div>
+                            <div class="address-content">
+                                @Model.Notes
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Order Items Card -->
+            <div class="info-card">
+                <div class="info-card-header">
+                    <h5>
+                        <i class="bi bi-box-seam-fill"></i>
+                        Order Items
+                    </h5>
+                </div>
+                <div class="info-card-body">
+                    <div class="table-responsive">
+                        <table class="table order-items-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.OrderItems)
+                                {
+                                    <tr>
+                                        <td class="product-name-cell">@item.Product?.Name</td>
+                                        <td>@item.Quantity</td>
+                                        <td>@item.Price.ToString("C")</td>
+                                        <td>@((item.Price * item.Quantity).ToString("C"))</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Subtotal:</strong></td>
+                                    <td><strong>@Model.Subtotal.ToString("C")</strong></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Tax (14%):</strong></td>
+                                    <td><strong>@Model.Tax.ToString("C")</strong></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Shipping:</strong></td>
+                                    <td><strong>@Model.ShippingCost.ToString("C")</strong></td>
+                                </tr>
+                                <tr class="total-row">
+                                    <td colspan="3" class="text-end"><h5 class="mb-0">Total:</h5></td>
+                                    <td><h5 class="total-amount mb-0">@Model.TotalAmount.ToString("C")</h5></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Actions -->
+        <div class="col-lg-4">
+            <!-- Actions Card -->
+            <div class="actions-card">
+                <div class="info-card-header">
+                    <h5>
+                        <i class="bi bi-sliders"></i>
+                        Order Actions
+                    </h5>
+                </div>
+                <div class="info-card-body">
+                    <form asp-action="UpdateStatus" method="post">
+                        <input type="hidden" name="orderId" value="@Model.Id" />
+
+                        <div class="mb-3">
+                            <label class="form-label">Update Order Status</label>
+                            <select name="status" class="form-select">
+                                <option value="1" selected="@(Model.Status == ECommerce.DAL.Enums.OrderStatus.Pending)">Pending</option>
+                                <option value="2" selected="@(Model.Status == ECommerce.DAL.Enums.OrderStatus.Processing)">Processing</option>
+                                <option value="3" selected="@(Model.Status == ECommerce.DAL.Enums.OrderStatus.Shipped)">Shipped</option>
+                                <option value="4" selected="@(Model.Status == ECommerce.DAL.Enums.OrderStatus.Delivered)">Delivered</option>
+                                <option value="5" selected="@(Model.Status == ECommerce.DAL.Enums.OrderStatus.Cancelled)">Cancelled</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn-update-status">
+                            <i class="bi bi-check-circle-fill"></i> Update Status
+                        </button>
+                    </form>
+
+                    <div class="section-divider"></div>
+
+                    <button class="btn-print" onclick="window.print()">
+                        <i class="bi bi-printer-fill"></i> Print Order
+                    </button>
+
+                    @if (Model.Status != ECommerce.DAL.Enums.OrderStatus.Cancelled)
+                    {
+                        <div class="info-alert">
+                            <small>
+                                <i class="bi bi-info-circle-fill"></i>
+                                Update the order status to track the fulfillment process.
+                            </small>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Timeline Card -->
+            <div class="timeline-card">
+                <div class="info-card-header">
+                    <h5>
+                        <i class="bi bi-clock-history"></i>
+                        Order Timeline
+                    </h5>
+                </div>
+                <div class="info-card-body">
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <i class="bi bi-check-circle-fill" style="color: var(--sage-green);"></i>
+                            <div class="timeline-content">
+                                <strong>Order Placed</strong>
+                                <p class="text-muted small mb-0">@Model.OrderDate.ToString("MMM dd, yyyy HH:mm")</p>
+                            </div>
+                        </div>
+
+                        @if (Model.PaymentDate.HasValue)
+                        {
+                            <div class="timeline-item">
+                                <i class="bi bi-credit-card-fill" style="color: var(--sage-green);"></i>
+                                <div class="timeline-content">
+                                    <strong>Payment Confirmed</strong>
+                                    <p class="text-muted small mb-0">@Model.PaymentDate.Value.ToString("MMM dd, yyyy HH:mm")</p>
+                                </div>
+                            </div>
+                        }
+
+                        @if (Model.ShippedDate.HasValue)
+                        {
+                            <div class="timeline-item">
+                                <i class="bi bi-truck" style="color: #3b82f6;"></i>
+                                <div class="timeline-content">
+                                    <strong>Shipped</strong>
+                                    <p class="text-muted small mb-0">@Model.ShippedDate.Value.ToString("MMM dd, yyyy HH:mm")</p>
+                                </div>
+                            </div>
+                        }
+
+                        @if (Model.DeliveredDate.HasValue)
+                        {
+                            <div class="timeline-item">
+                                <i class="bi bi-box-seam-fill" style="color: var(--sage-green);"></i>
+                                <div class="timeline-content">
+                                    <strong>Delivered</strong>
+                                    <p class="text-muted small mb-0">@Model.DeliveredDate.Value.ToString("MMM dd, yyyy HH:mm")</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

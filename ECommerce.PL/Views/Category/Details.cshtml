@@ -1,0 +1,332 @@
+﻿@model ECommerce.PL.ViewModels.CategoryProductsViewModel
+@{
+    ViewData["Title"] = Model.CategoryName + " - Shopfinity";
+}
+
+<style>
+
+    @@keyframes scaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @@keyframes countUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        box-shadow: 0 2px 8px rgba(49, 54, 71, 0.08);
+        border: 2px solid var(--cream);
+        animation: fadeInDown 0.6s ease;
+    }
+
+    .breadcrumb-item a {
+        color: var(--sage-green);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+    }
+
+        .breadcrumb-item a:hover {
+            color: var(--dark-navy);
+        }
+
+    .breadcrumb-item.active {
+        color: var(--dark-navy);
+        font-weight: 600;
+    }
+
+    /* Main Card */
+    .category-details-card {
+        background: white;
+        border: none;
+        border-radius: 24px;
+        box-shadow: 0 8px 30px rgba(49, 54, 71, 0.12);
+        overflow: hidden;
+        animation: scaleIn 0.8s ease;
+    }
+
+    .category-header {
+        background: linear-gradient(135deg, var(--dark-navy), var(--slate-blue));
+        color: white;
+        padding: 2.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .category-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(163, 176, 135, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .category-header h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .category-header i {
+            color: var(--sage-green);
+            font-size: 2.5rem;
+            margin-right: 1rem;
+        }
+
+    /* Description Section */
+    .description-section {
+        padding: 2.5rem;
+        border-bottom: 2px solid var(--cream);
+        animation: fadeInUp 1s ease 0.3s both;
+    }
+
+    .section-title {
+        color: var(--dark-navy);
+        font-weight: 700;
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid var(--sage-green);
+        display: inline-block;
+    }
+
+    .description-text {
+        color: #6b7280;
+        line-height: 1.8;
+        font-size: 1.05rem;
+    }
+
+    /* Statistics Section */
+    .stats-section {
+        padding: 2.5rem;
+        animation: fadeInUp 1s ease 0.5s both;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, var(--cream), #fff);
+        border: 2px solid var(--sage-green);
+        border-radius: 20px;
+        padding: 2.5rem 1.5rem;
+        text-align: center;
+        transition: all 0.4s;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--sage-green), #b5c599);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(163, 176, 135, 0.3);
+        }
+
+    .stat-icon {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        animation: countUp 0.8s ease;
+    }
+
+        .stat-icon.products {
+            color: var(--sage-green);
+        }
+
+        .stat-icon.stock {
+            color: var(--dark-navy);
+        }
+
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--dark-navy);
+        margin-bottom: 0.5rem;
+        animation: countUp 1s ease 0.7s both;
+    }
+
+    .stat-label {
+        color: var(--slate-blue);
+        font-weight: 600;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Actions Section */
+    .actions-section {
+        padding: 2rem 2.5rem 2.5rem;
+        background: var(--cream);
+        animation: fadeInUp 1s ease 0.7s both;
+    }
+
+    .btn-view-products {
+        background: linear-gradient(135deg, var(--sage-green), #b5c599);
+        border: none;
+        color: white;
+        padding: 1rem 2.5rem;
+        border-radius: 12px;
+        font-weight: 700;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(163, 176, 135, 0.3);
+    }
+
+        .btn-view-products:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(163, 176, 135, 0.5);
+            color: white;
+        }
+
+    .btn-back {
+        background: white;
+        border: 2px solid var(--sage-green);
+        color: var(--dark-navy);
+        padding: 1rem 2.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+        .btn-back:hover {
+            background: var(--sage-green);
+            color: white;
+            border-color: var(--sage-green);
+        }
+</style>
+
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+                <a asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-house-door-fill me-1"></i>Home
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a asp-controller="Category" asp-action="Index">Categories</a>
+            </li>
+            <li class="breadcrumb-item active">@Model.CategoryName</li>
+        </ol>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="category-details-card">
+                <!-- Header -->
+                <div class="category-header">
+                    <h2>
+                        <i class="bi bi-tag-fill"></i>
+                        @Model.CategoryName
+                    </h2>
+                </div>
+
+                <!-- Description Section -->
+                <div class="description-section">
+                    <h5 class="section-title">
+                        <i class="bi bi-info-circle-fill me-2"></i>About This Category
+                    </h5>
+                    <p class="description-text">
+                        @if (string.IsNullOrEmpty(Model.CategoryDescription))
+                        {
+                            <span class="fst-italic">
+                                Explore our curated collection of products in the @Model.CategoryName category.
+                                Quality, variety, and value in every item.
+                            </span>
+                        }
+                        else
+                        {
+                            @Model.CategoryDescription
+                        }
+                    </p>
+                </div>
+
+                <!-- Statistics Section -->
+                <div class="stats-section">
+                    <h5 class="section-title mb-4">
+                        <i class="bi bi-graph-up-arrow me-2"></i>Category Statistics
+                    </h5>
+                    <div class="row g-4">
+                        <!-- Total Products -->
+                        <div class="col-md-6">
+                            <div class="stat-card">
+                                <div class="stat-icon products">
+                                    <i class="bi bi-box-seam-fill"></i>
+                                </div>
+                                <h2 class="stat-number">@Model.Products.Count()</h2>
+                                <p class="stat-label mb-0">Total Products</p>
+                            </div>
+                        </div>
+
+                        <!-- In Stock -->
+                        <div class="col-md-6">
+                            <div class="stat-card">
+                                <div class="stat-icon stock">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                </div>
+                                <h2 class="stat-number">@Model.Products.Count(p => !p.IsOutOfStock)</h2>
+                                <p class="stat-label mb-0">In Stock</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions Section -->
+                <div class="actions-section">
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a asp-controller="Category"
+                           asp-action="Products"
+                           asp-route-id="@Model.CategoryId"
+                           class="btn btn-view-products flex-fill">
+                            <i class="bi bi-grid-fill me-2"></i>View All Products
+                        </a>
+                        <a asp-controller="Category"
+                           asp-action="Index"
+                           class="btn btn-back flex-fill">
+                            <i class="bi bi-arrow-left me-2"></i>Back to Categories
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
