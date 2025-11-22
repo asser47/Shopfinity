@@ -16,20 +16,17 @@ namespace ECommerce.PL.Areas.Admin.Controllers
             _categoryService = categoryService;
         }
 
-        // GET: Admin/Category
         public IActionResult Index()
         {
             var categories = _categoryService.GetAllCategories();
             return View(categories);
         }
 
-        // GET: Admin/Category/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Admin/Category/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Category category)
@@ -43,7 +40,6 @@ namespace ECommerce.PL.Areas.Admin.Controllers
             return View(category);
         }
 
-        // GET: Admin/Category/Edit/5
         public IActionResult Edit(int id)
         {
             var category = _categoryService.GetCategoryById(id);
@@ -53,7 +49,6 @@ namespace ECommerce.PL.Areas.Admin.Controllers
             return View(category);
         }
 
-        // POST: Admin/Category/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Category category)
@@ -67,7 +62,6 @@ namespace ECommerce.PL.Areas.Admin.Controllers
             return View(category);
         }
 
-        // GET: Admin/Category/Delete/5
         public IActionResult Delete(int id)
         {
             var category = _categoryService.GetCategoryById(id);
@@ -77,7 +71,6 @@ namespace ECommerce.PL.Areas.Admin.Controllers
             return View(category);
         }
 
-        // POST: Admin/Category/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)

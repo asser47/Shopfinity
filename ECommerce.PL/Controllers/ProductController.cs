@@ -25,14 +25,32 @@ namespace ECommerce.PL.Controllers
             bool? inStock = null,
             string sortBy = "name_asc")
         {
-            // Get filtered products
-            var products = _productService.SearchProducts(
+            // Get filtered products from service (returns DAL models)
+            var productsFromService = _productService.SearchProducts(
                 searchTerm,
                 categoryId,
                 minPrice,
                 maxPrice,
                 inStock,
                 sortBy);
+
+            // ✅ FALLBACK: If SearchProducts returns nothing, get all products
+            if (productsFromService == null || !productsFromService.Any())
+            {
+                productsFromService = _productService.GetAllProducts();
+            }
+
+            // ✅ MAP DAL Product to PL ProductViewModel
+            var products = productsFromService?.Select(p => new ProductViewModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Description = p.Description,
+                Price = p.Price,
+                ImageUrl = p.ImageUrl,
+                Stock = p.Stock,
+                IsOutOfStock = p.Stock == 0
+            }).ToList() ?? new List<ProductViewModel>();
 
             // Prepare categories for dropdown
             var categories = _categoryService.GetAllCategories()

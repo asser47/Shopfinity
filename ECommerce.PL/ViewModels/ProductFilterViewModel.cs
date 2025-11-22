@@ -14,7 +14,7 @@ namespace ECommerce.PL.ViewModels
         public string SortBy { get; set; }
 
         // Results
-        public IEnumerable<Product> Products { get; set; } = new List<Product>();
+        public IEnumerable<ProductViewModel> Products { get; set; } = new List<ProductViewModel>();
         public int TotalResults { get; set; }
 
         // For dropdowns

@@ -15,21 +15,17 @@ namespace ECommerce.PL.ViewComponents
 
         public IViewComponentResult Invoke()
         {
-            // IMPORTANT: Use the same logic as CartController.GetUserId()
             string userId;
 
-            // Check authenticated user FIRST (same as CartController)
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             }
             else
             {
-                // Then check session (same as CartController)
                 userId = HttpContext.Session.GetString("UserId") ?? "";
             }
 
-            // Get count (handle empty userId)
             int count = 0;
             if (!string.IsNullOrEmpty(userId))
             {

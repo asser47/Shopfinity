@@ -15,19 +15,16 @@ namespace ECommerce.BLL.Services
 
         public IEnumerable<Category> GetAllCategories()
         {
-            // ✅ Just get categories - NO eager loading needed!
             return _unitOfWork.Categories.GetAll();
         }
 
         public Category GetCategoryById(int id)
         {
-            // ✅ Just get category - NO eager loading needed!
             return _unitOfWork.Categories.GetById(id);
         }
 
         public IEnumerable<Product> GetProductsByCategory(int categoryId)
         {
-            // ✅ Get products separately by filtering
             return _unitOfWork.Products.Find(p => p.CategoryId == categoryId);
         }
 

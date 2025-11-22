@@ -18,14 +18,12 @@ namespace ECommerce.PL.Areas.Admin.Controllers
             _productService = productService;
         }
 
-        // GET: Admin/Order
         public IActionResult Index()
         {
             var orders = _orderService.GetAllOrders();
             return View(orders);
         }
 
-        // GET: Admin/Order/Details/5
         public IActionResult Details(int id)
         {
             var order = _orderService.GetOrderByIdWithDetails(id);
@@ -35,7 +33,6 @@ namespace ECommerce.PL.Areas.Admin.Controllers
             return View(order);
         }
 
-        // POST: Admin/Order/UpdateStatus
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult UpdateStatus(int orderId, OrderStatus status)

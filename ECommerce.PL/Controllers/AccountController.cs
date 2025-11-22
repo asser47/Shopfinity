@@ -70,7 +70,6 @@ namespace ECommerce.PL.Controllers
                     await _userManager.AddToRoleAsync(user, model.UserType);
                     await _signInManager.SignInAsync(user, isPersistent: false);
 
-                    // MIGRATE SESSION CART
                     await MigrateSessionCart(user.Id);
 
                     TempData["SuccessMessage"] = "Registration successful! Welcome!";
@@ -109,7 +108,6 @@ namespace ECommerce.PL.Controllers
                 {
                     var user = await _userManager.FindByEmailAsync(model.Email);
 
-                    // MIGRATE SESSION CART
                     await MigrateSessionCart(user.Id);
 
                     TempData["SuccessMessage"] = "Login successful!";
@@ -153,7 +151,6 @@ namespace ECommerce.PL.Controllers
             }
         }
 
-        // SIMPLE MIGRATION METHOD
         private async Task MigrateSessionCart(string userId)
         {
             var anonymousUserId = HttpContext.Session.GetString("UserId");

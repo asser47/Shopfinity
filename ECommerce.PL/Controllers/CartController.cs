@@ -16,7 +16,6 @@ namespace ECommerce.PL.Controllers
             _productService = productService;
         }
 
-        // UPDATED: Check for authenticated user first
         private string GetUserId()
         {
             if (User.Identity.IsAuthenticated)

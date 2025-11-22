@@ -46,7 +46,6 @@ namespace ECommerce.BLL.Services
             return _unitOfWork.Products.Find(p => p.CategoryId == categoryId);
         }
 
-        // ✅ NEW: Search and Filter Implementation
         public IEnumerable<Product> SearchProducts(
             string searchTerm = null,
             int? categoryId = null,
@@ -57,7 +56,6 @@ namespace ECommerce.BLL.Services
         {
             var query = _unitOfWork.Products.GetAll().AsQueryable();
 
-            // Search by name or description
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 searchTerm = searchTerm.ToLower();
@@ -66,13 +64,11 @@ namespace ECommerce.BLL.Services
                     (p.Description != null && p.Description.ToLower().Contains(searchTerm)));
             }
 
-            // Filter by category
             if (categoryId.HasValue && categoryId.Value > 0)
             {
                 query = query.Where(p => p.CategoryId == categoryId.Value);
             }
 
-            // Filter by price range
             if (minPrice.HasValue)
             {
                 query = query.Where(p => p.Price >= minPrice.Value);
@@ -83,7 +79,6 @@ namespace ECommerce.BLL.Services
                 query = query.Where(p => p.Price <= maxPrice.Value);
             }
 
-            // Filter by stock availability
             if (inStock.HasValue)
             {
                 if (inStock.Value)
@@ -92,7 +87,6 @@ namespace ECommerce.BLL.Services
                     query = query.Where(p => p.Stock == 0);
             }
 
-            // Sorting
             query = sortBy switch
             {
                 "price_asc" => query.OrderBy(p => p.Price),
@@ -100,7 +94,7 @@ namespace ECommerce.BLL.Services
                 "name_asc" => query.OrderBy(p => p.Name),
                 "name_desc" => query.OrderByDescending(p => p.Name),
                 "newest" => query.OrderByDescending(p => p.Id),
-                _ => query.OrderBy(p => p.Name) // Default sort
+                _ => query.OrderBy(p => p.Name)
             };
 
             return query.ToList();

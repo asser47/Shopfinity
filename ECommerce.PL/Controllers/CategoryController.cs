@@ -13,12 +13,11 @@ namespace ECommerce.PL.Controllers
             _categoryService = categoryService;
         }
 
-        // GET: Category/Index
         public IActionResult Index()
         {
-            var categories = _categoryService.GetAllCategories().ToList();  // ⭐ ToList() FIRST!
+            var categories = _categoryService.GetAllCategories().ToList(); 
 
-            var viewModels = new List<CategoryViewModel>();  // ⭐ Create list
+            var viewModels = new List<CategoryViewModel>();  
 
             foreach (var category in categories)
             {
@@ -35,7 +34,6 @@ namespace ECommerce.PL.Controllers
             return View(viewModels);
         }
 
-        // GET: Category/Details/5
         public IActionResult Details(int id)
         {
             var category = _categoryService.GetCategoryById(id);
@@ -69,7 +67,6 @@ namespace ECommerce.PL.Controllers
             return View(viewModel);
         }
 
-        // GET: Category/Products/5
         public IActionResult Products(int id)
         {
             var category = _categoryService.GetCategoryById(id);
@@ -79,7 +76,7 @@ namespace ECommerce.PL.Controllers
                 return NotFound();
             }
 
-            var products = _categoryService.GetProductsByCategory(id).ToList();  // ⭐ ToList()!
+            var products = _categoryService.GetProductsByCategory(id).ToList(); 
 
             Console.WriteLine($"Products - Category: {category.Name}, Products: {products.Count}");
             foreach (var p in products)

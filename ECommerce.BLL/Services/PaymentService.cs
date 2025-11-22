@@ -24,7 +24,6 @@ namespace ECommerce.BLL.Services
                 .Find(oi => oi.OrderId == orderId)
                 .ToList();
 
-            // Create line items for Stripe
             var lineItems = new List<SessionLineItemOptions>();
             foreach (var item in orderItems)
             {
@@ -39,13 +38,12 @@ namespace ECommerce.BLL.Services
                             Name = product?.Name ?? "Product",
                             Description = product?.Description
                         },
-                        UnitAmount = (long)(item.Price * 100) // Convert to cents
+                        UnitAmount = (long)(item.Price * 100)
                     },
                     Quantity = item.Quantity
                 });
             }
 
-            // Add shipping as a line item
             lineItems.Add(new SessionLineItemOptions
             {
                 PriceData = new SessionLineItemPriceDataOptions
@@ -60,7 +58,6 @@ namespace ECommerce.BLL.Services
                 Quantity = 1
             });
 
-            // Add tax as a line item
             lineItems.Add(new SessionLineItemOptions
             {
                 PriceData = new SessionLineItemPriceDataOptions
@@ -75,7 +72,6 @@ namespace ECommerce.BLL.Services
                 Quantity = 1
             });
 
-            // Create Stripe checkout session
             var options = new SessionCreateOptions
             {
                 PaymentMethodTypes = new List<string> { "card" },

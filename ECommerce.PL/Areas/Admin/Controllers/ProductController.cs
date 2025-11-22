@@ -19,26 +19,22 @@ namespace ECommerce.PL.Areas.Admin.Controllers
             _categoryService = categoryService;
         }
 
-        // GET: Admin/Product
         public IActionResult Index()
         {
             var products = _productService.GetAllProducts();
             return View(products);
         }
 
-        // GET: Admin/Product/Create
         public IActionResult Create()
         {
             ViewBag.Categories = new SelectList(_categoryService.GetAllCategories(), "Id", "Name");
             return View();
         }
 
-        // POST: Admin/Product/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Product product)
         {
-            // ✅ Remove navigation property from validation
             ModelState.Remove("Category");
 
             if (ModelState.IsValid)
@@ -60,7 +56,6 @@ namespace ECommerce.PL.Areas.Admin.Controllers
             return View(product);
         }
 
-        // GET: Admin/Product/Edit/5
         public IActionResult Edit(int id)
         {
             var product = _productService.GetProductById(id);
@@ -71,7 +66,6 @@ namespace ECommerce.PL.Areas.Admin.Controllers
             return View(product);
         }
 
-        // POST: Admin/Product/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Product product)
@@ -81,7 +75,6 @@ namespace ECommerce.PL.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            // ✅ Remove navigation property from validation
             ModelState.Remove("Category");
 
             if (ModelState.IsValid)
@@ -103,7 +96,6 @@ namespace ECommerce.PL.Areas.Admin.Controllers
             return View(product);
         }
 
-        // GET: Admin/Product/Delete/5
         public IActionResult Delete(int id)
         {
             var product = _productService.GetProductById(id);
@@ -113,7 +105,6 @@ namespace ECommerce.PL.Areas.Admin.Controllers
             return View(product);
         }
 
-        // POST: Admin/Product/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)

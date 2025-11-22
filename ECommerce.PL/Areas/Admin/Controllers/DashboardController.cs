@@ -31,7 +31,6 @@ namespace ECommerce.PL.Areas.Admin.Controllers
             var totalOrders = allOrders.Count();
             var totalRevenue = allOrders.Sum(o => o.TotalAmount);
 
-            // ✅ NEW: Low stock alerts
             var lowStockProducts = _orderService.GetLowStockProducts(10);
             var outOfStockProducts = _orderService.GetOutOfStockProducts();
 

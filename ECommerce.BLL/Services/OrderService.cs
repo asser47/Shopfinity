@@ -56,7 +56,6 @@ namespace ECommerce.BLL.Services
                 order.OrderItems.Add(orderItem);
                 subtotal += orderItem.Price * orderItem.Quantity;
 
-                // ✅ CHANGED: Reduce stock immediately when order is created
                 product.Stock -= cartItem.Quantity;
                 _unitOfWork.Products.Update(product);
             }
@@ -102,7 +101,6 @@ namespace ECommerce.BLL.Services
             return order;
         }
 
-        // ✅ IMPROVED: Smart stock management based on status changes
         public void UpdateOrderStatus(int orderId, OrderStatus newStatus)
         {
             var order = _unitOfWork.Orders.GetById(orderId);
@@ -111,16 +109,13 @@ namespace ECommerce.BLL.Services
 
             var oldStatus = order.Status;
 
-            // ✅ Handle stock restoration if order is cancelled
             if (newStatus == OrderStatus.Cancelled && oldStatus != OrderStatus.Cancelled)
             {
                 RestoreStock(orderId);
             }
 
-            // Update status
             order.Status = newStatus;
 
-            // Update timestamps
             if (newStatus == OrderStatus.Shipped && !order.ShippedDate.HasValue)
                 order.ShippedDate = DateTime.Now;
             else if (newStatus == OrderStatus.Delivered && !order.DeliveredDate.HasValue)
@@ -148,7 +143,6 @@ namespace ECommerce.BLL.Services
             if (order.Status == OrderStatus.Cancelled)
                 throw new InvalidOperationException("Order is already cancelled");
 
-            // Restore stock
             RestoreStock(orderId);
 
             order.Status = OrderStatus.Cancelled;
@@ -156,7 +150,6 @@ namespace ECommerce.BLL.Services
             _unitOfWork.Complete();
         }
 
-        // ✅ NEW: Helper method to restore stock
         private void RestoreStock(int orderId)
         {
             var orderItems = _unitOfWork.OrderItems
@@ -197,14 +190,12 @@ namespace ECommerce.BLL.Services
 
         public void DeleteOrder(int orderId)
         {
-            // ✅ Restore stock before deleting
             RestoreStock(orderId);
 
             _unitOfWork.Orders.Delete(orderId);
             _unitOfWork.Complete();
         }
 
-        // ✅ NEW: Get low stock products
         public IEnumerable<Product> GetLowStockProducts(int threshold = 10)
         {
             return _unitOfWork.Products
@@ -212,7 +203,6 @@ namespace ECommerce.BLL.Services
                 .OrderBy(p => p.Stock);
         }
 
-        // ✅ NEW: Get out of stock products
         public IEnumerable<Product> GetOutOfStockProducts()
         {
             return _unitOfWork.Products
